@@ -8,6 +8,8 @@ class Flutterwave{
 
     private readonly secretKey = process.env.FLUTTERWAVE_SECRET_KEY;
 
+    private readonly redirectUrl = process.env.FLUTTERWAVE_REDIRECT_URL;
+
 
     private readonly config = {
 
@@ -27,7 +29,7 @@ class Flutterwave{
             data: {
                 ...data,
                 currency: 'NGN',
-                redirect_url: "http://localhost:5000/api/v1/payment/success",
+                redirect_url: `${this.redirectUrl}/api/v1/payment/success`,
             }
         }),
     }
