@@ -6,6 +6,7 @@ import { IRole } from '../admin/interfaces/admin.interface';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
 import { TransactionParam } from 'src/common/decorators/transaction-param.decorator';
 import { Transaction } from 'sequelize';
+import { Public } from 'src/common/decorators/public.decorator';
 
 
 @Controller('content')
@@ -20,6 +21,7 @@ export class ContentController {
     return await this.contentService.create(body, transaction);
   }
 
+  @Public()
   @Get(':id')
   @HttpCode(200)
   @ResponseMessage("content details")
@@ -27,6 +29,7 @@ export class ContentController {
     return await this.contentService.findContentById(id);
   }
 
+  @Public()
   @Get()
   @HttpCode(200)
   @ResponseMessage("content details")

@@ -74,33 +74,13 @@ export class PaymentService {
 
   }
 
-  // async handlePaymentCallback(data: any, transaction: Transaction){
+  async handlePaymentCallback(secret: string, data: any, transaction: Transaction){
 
-  //   const flw = new Flutterwave("FLWPUBK_TEST-a5887bda0d693fd7beee3cf0afbfdf08-X", "FLWSECK_TEST-1248371c838b289e130b514b0e30a178-X");
-      
-  //     const transactionDetails = await this.paymentRepository.findOne({tx_ref: data.tx_ref});
-      
-  //      const response = await flw.Transaction.verify({tx_ref: data.tx_ref});
+    console.log(secret);
+    
+    console.log(data)
 
-  //      return response.data;
-
-      
-  //     //  if(
-  //     //   transactionDetails 
-  //     //  && response.data.status === "successful"
-  //     //  && response.data.currency === "NGN" 
-  //     //   ){
-          
-  //     //     await this.paymentRepository.update({tx_ref: data.tx_ref}, {status: IStatus.success}, transaction);
-
-  //     //   } else {
-
-  //     //     await this.paymentRepository.update({tx_ref: data.tx_ref}, {status: IStatus.failed}, transaction);
-       
-  //     //   }
-
-
-  // }
+  }
 
   async findPaymentHistory(data: GetPageDto){
 

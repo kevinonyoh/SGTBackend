@@ -65,7 +65,7 @@ export class AdminService {
 
     if(!user) throw new BadRequestException("admin does not exist");
 
-    const comparePassword = bcrypt.compareSync(data.oldPassword, user.password);
+    const comparePassword = await bcrypt.compareSync(data.oldPassword, user.password);
 
     if (!comparePassword) throw new BadRequestException('old Password is incorrect');
 

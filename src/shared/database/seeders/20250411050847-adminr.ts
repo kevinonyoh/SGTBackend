@@ -15,7 +15,7 @@ module.exports = {
           id: uuidv4(),
           full_name: "super admin",
           phone_number: "07056163909",
-          email: "evionyoh@yahoo.com",
+          email: "Disuolaseni@gmail.com",
           role: Sequelize.literal(`ARRAY['SUPER_ADMIN']::"enum_admins_role"[]`),
           password,
           is_email_verified: true,

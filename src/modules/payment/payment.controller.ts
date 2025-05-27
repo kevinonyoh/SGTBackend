@@ -30,14 +30,15 @@ export class PaymentController {
   }
 
 
-  // @Get("payment-callback")
-  // @HttpCode(200)
-  // @ResponseMessage("verify payment")
-  // async handlePaymentCallback(@Query() query: VerifyPaymentDto, @TransactionParam() transaction: Transaction){
+  @Public()
+  @Get("payment-callback/:secret")
+  @HttpCode(200)
+  @ResponseMessage("verify payment")
+  async handlePaymentCallback(@Param("secret") secret: string, @Body() body: any, @TransactionParam() transaction: Transaction){
 
-  //   return await this.paymentService.handlePaymentCallback(query, transaction);
+    return await this.paymentService.handlePaymentCallback(secret,body, transaction);
 
-  // }
+  }
 
   @Role(IRole.SUPER_ADMIN)
   @Get("payment-history")
@@ -66,14 +67,5 @@ export class PaymentController {
 
   }
 
-
-
-  @Public()
-  @Get("success")
-  @HttpCode(200)
-  @ResponseMessage("payment successful")
-  async paymentsuccessful(@Query() query){
-       console.log(query);
-  }
  
 }
