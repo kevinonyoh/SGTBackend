@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadGatewayException, BadRequestException, Injectable } from '@nestjs/common';
 import {  GetPageDto, MakePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { FlutterwaveGateway } from './payment-factory/payment-gateway/flutterwave.gateway';
@@ -76,9 +76,15 @@ export class PaymentService {
 
   async handlePaymentCallback(secret: string, data: any, transaction: Transaction){
 
-    console.log(secret);
-    
-    console.log(data)
+     const secretKey = process.env.FLUTTERWAVE_WEBHOOK_SECRET_PATH;
+
+     if(!(secretKey === secret)) throw new BadRequestException("invalid secret hash");
+
+     const {tx_ref, status} = data.data;
+
+     if(status.toLowerCase()  === IStatus.success ) return await this.paymentRepository.update({tx_ref}, {status: IStatus.success}, transaction);
+     
+     if(status.toLowerCase()  === IStatus.failed ) return await this.paymentRepository.update({tx_ref}, {status: IStatus.failed}, transaction);
 
   }
 
