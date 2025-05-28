@@ -30,15 +30,26 @@ export class PaymentController {
   }
 
 
+  // @Public()
+  // @Get("payment-callback/:secret")
+  // @HttpCode(200)
+  // @ResponseMessage("verify payment")
+  // async handlePaymentCallback(@Param("secret") secret: string, @Body() body: any, @TransactionParam() transaction: Transaction){
+
+  //   return await this.paymentService.handlePaymentCallback(secret,body, transaction);
+
+  // }
+
   @Public()
-  @Get("payment-callback/:secret")
+  @Get("payment-callback")
   @HttpCode(200)
   @ResponseMessage("verify payment")
-  async handlePaymentCallback(@Param("secret") secret: string, @Body() body: any, @TransactionParam() transaction: Transaction){
+  async handlePaymentCallback(@Body() body: any, @TransactionParam() transaction: Transaction){
 
-    return await this.paymentService.handlePaymentCallback(secret,body, transaction);
+    return await this.paymentService.handlePaymentCallback(body, transaction);
 
   }
+
 
   @Role(IRole.SUPER_ADMIN)
   @Get("payment-history")

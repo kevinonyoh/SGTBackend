@@ -74,11 +74,13 @@ export class PaymentService {
 
   }
 
-  async handlePaymentCallback(secret: string, data: any, transaction: Transaction){
+  async handlePaymentCallback( data: any, transaction: Transaction){
 
-     const secretKey = process.env.FLUTTERWAVE_WEBHOOK_SECRET_PATH;
+    // secret: string,
 
-     if(!(secretKey === secret)) throw new BadRequestException("invalid secret hash");
+    //  const secretKey = process.env.FLUTTERWAVE_WEBHOOK_SECRET_PATH;
+
+    //  if(!(secretKey === secret)) throw new BadRequestException("invalid secret hash");
 
      const {tx_ref, status} = data.data;
 
@@ -87,6 +89,9 @@ export class PaymentService {
      if(status.toLowerCase()  === IStatus.failed ) return await this.paymentRepository.update({tx_ref}, {status: IStatus.failed}, transaction);
 
   }
+
+  
+
 
   async findPaymentHistory(data: GetPageDto){
 
