@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsEmail, IsEnum, IsNotEmpty, IsString } from "class-validator";
 import { ICoursesInterest } from "../interfaces/users.interface";
 
 export class CreateUserDto {
@@ -11,9 +11,10 @@ export class CreateUserDto {
     @IsNotEmpty()
     email: string;
 
-    @IsEnum(ICoursesInterest)
-    @IsNotEmpty()
-    coursesInterest: ICoursesInterest;
+    @IsArray()
+    @ArrayNotEmpty() 
+    @IsEnum(ICoursesInterest, { each: true })
+    coursesInterest: ICoursesInterest[];
 
     @IsString()
     @IsNotEmpty()

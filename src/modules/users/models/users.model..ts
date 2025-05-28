@@ -28,8 +28,8 @@ export class UsersModel extends Model<UsersModel> {
     email: string;
 
     @AllowNull(true)
-    @Column(DataType.ENUM(ICoursesInterest.ATS, ICoursesInterest.ICAN, ICoursesInterest.Olevel, ICoursesInterest.All_Courses))
-    coursesInterest: string;
+    @Column(DataType.ARRAY(DataType.ENUM(ICoursesInterest.ATS, ICoursesInterest.ICAN, ICoursesInterest.Olevel, ICoursesInterest.All_Courses)))
+    coursesInterest: ICoursesInterest[];
 
     @AllowNull(true)
     @Column

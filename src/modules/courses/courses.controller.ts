@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put } from '@nestjs/common';
 import { CoursesService } from './courses.service';
-import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto } from './dto/create-course.dto';
+import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { Role } from 'src/common/decorators/role.decorator';
 import { IRole } from '../admin/interfaces/admin.interface';
@@ -52,7 +52,20 @@ export class CoursesController {
     return await this.coursesService.deleteCourse(id, transaction);
   }
 
+
+  @Get(":id")
+  @HttpCode(200)
+  @ResponseMessage("course details")
+  async getCourse(@Param("id") id: string){
+     return await this.coursesService.findCourse(id);
+  }
   
+  @Get()
+  @HttpCode(200)
+  @ResponseMessage("Courses details")
+  async getCourses(@Body() body:GetCourseDto){
+     return await this.coursesService.findAllCourse(body);
+  }
 
 
   
