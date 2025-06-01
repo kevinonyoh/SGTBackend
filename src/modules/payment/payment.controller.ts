@@ -80,11 +80,11 @@ export class PaymentController {
   }
 
 
-  @Get("courses")
+  @Get("courses/:courseId")
   @HttpCode(200)
   @ResponseMessage("course data")
-  async getCourse(){
-
+  async getCourse(@Param("courseId") courseId: string, @User() user: IUser){
+     return await this.paymentService.getCourse(user, courseId);
   }
 
  
