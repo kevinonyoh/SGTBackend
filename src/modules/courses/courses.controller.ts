@@ -53,15 +53,15 @@ export class CoursesController {
   }
 
 
-  @Role(IRole.SUPER_ADMIN, IRole.MANAGE_COURSES)
+  
   @Get(":id")
   @HttpCode(200)
   @ResponseMessage("course details")
   async getCourse(@Param("id") id: string){
      return await this.coursesService.findCourse(id);
   }
+
   
-  @Role(IRole.SUPER_ADMIN, IRole.MANAGE_COURSES)
   @Get()
   @HttpCode(200)
   @ResponseMessage("Courses details")
