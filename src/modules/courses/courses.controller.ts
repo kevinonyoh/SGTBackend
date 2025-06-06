@@ -7,6 +7,7 @@ import { IRole } from '../admin/interfaces/admin.interface';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
 import { TransactionParam } from 'src/common/decorators/transaction-param.decorator';
 import { Transaction } from 'sequelize';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('courses')
 export class CoursesController {
