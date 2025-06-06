@@ -53,7 +53,7 @@ export class CoursesController {
   }
 
 
-  
+  @Public()
   @Get(":id")
   @HttpCode(200)
   @ResponseMessage("course details")
@@ -61,7 +61,7 @@ export class CoursesController {
      return await this.coursesService.findCourse(id);
   }
 
-  
+  @Public()
   @Get()
   @HttpCode(200)
   @ResponseMessage("Courses details")
