@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put,  Query } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
@@ -68,7 +68,7 @@ export class CoursesController {
   @Get()
   @HttpCode(200)
   @ResponseMessage("Courses details")
-  async getCourses(@Body() body:GetCourseDto){
+  async getCourses(@Query() body:GetCourseDto){
      return await this.coursesService.findAllCourse(body);
   }
 
