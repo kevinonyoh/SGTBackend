@@ -8,6 +8,7 @@ import { ResponseMessage } from 'src/common/decorators/response-message.decorato
 import { TransactionParam } from 'src/common/decorators/transaction-param.decorator';
 import { Transaction } from 'sequelize';
 import { Public } from 'src/common/decorators/public.decorator';
+import { ICoursesInterest } from '../users/interfaces/users.interface';
 
 
 
@@ -57,7 +58,7 @@ export class CoursesController {
 
 
   @Public()
-  @Get(":id")
+  @Get("id/:id")
   @HttpCode(200)
   @ResponseMessage("course details")
   async getCourse(@Param("id") id: string){
@@ -72,6 +73,11 @@ export class CoursesController {
      return await this.coursesService.findAllCourse(body);
   }
 
+  @Public()
+  @Get("type/:courseType")
+  @ResponseMessage("course details")
+  async getCourseByType(@Param("courseType") courseType: ICoursesInterest, @Query() query: GetCourseDto){
+      return await this.coursesService.findByType(courseType, query);
+  }
 
-  
 }

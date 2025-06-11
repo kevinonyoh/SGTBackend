@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseDto } from './dto/create-course.dto';
+import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { CoursesRepository } from './repositories/course.repository';
 import { ChapterRepository } from './repositories/chapter.repository';
@@ -105,6 +105,23 @@ export class CoursesService {
     return await this.courseRepository.findAllPaginated({}, <unknown>includeOption, {page, limit});
 
   }
+
+
+  async findByType(type: string, data: GetCourseDto){
+      
+    const {page, limit} = data;
+
+    const includeOption = {
+
+      order: [['createdAt', 'DESC']]
+
+    }
+
+    return await this.courseRepository.findAllPaginated({courseType: type}, <unknown>includeOption, {page, limit});
+
+
+  }
+
 
   async deleteCourse(id: string, transaction: Transaction){
 

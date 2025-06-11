@@ -148,3 +148,21 @@ export class GetCourseDto{
     limit: number;
 
 }
+
+
+export class GetCourseByTypeDto{
+   
+    @IsNumber()
+    @IsOptional()
+    page: number;
+
+    @IsNumber()
+    @IsOptional()
+    limit: number;
+
+    @IsEnum(ICoursesInterest)
+    @IsNotEmpty()
+    type: ICoursesInterest;
+
+
+}
