@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put,  Query } from '@nestjs/common';
 import { CoursesService } from './courses.service';
-import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseDto } from './dto/create-course.dto';
+import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseDto, QuizAttemptDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { Role } from 'src/common/decorators/role.decorator';
 import { IRole } from '../admin/interfaces/admin.interface';
@@ -8,7 +8,8 @@ import { ResponseMessage } from 'src/common/decorators/response-message.decorato
 import { TransactionParam } from 'src/common/decorators/transaction-param.decorator';
 import { Transaction } from 'sequelize';
 import { Public } from 'src/common/decorators/public.decorator';
-import { ICoursesInterest } from '../users/interfaces/users.interface';
+import { ICoursesInterest, IUser } from '../users/interfaces/users.interface';
+import { User } from 'src/common/decorators/user.decorator';
 
 
 
@@ -78,6 +79,20 @@ export class CoursesController {
   @ResponseMessage("course details")
   async getCourseByType(@Param("courseType") courseType: ICoursesInterest, @Query() query: GetCourseDto){
       return await this.coursesService.findByType(courseType, query);
+  }
+
+
+  @Post("quiz-attempt")
+  @ResponseMessage("quiz answers submitted successfully")
+  async postQuizAttempt(@User() user: IUser, @Body() body: QuizAttemptDto, @TransactionParam() transaction: Transaction){
+     return await this.coursesService.userAttemptQuiz(user, body, transaction);
+  }
+
+
+  @Get("review-quiz/:quizId")
+  @ResponseMessage("quiz review")
+  async getQuizReview(@User() user: IUser, @Param("quizId") quizId: string){
+      return await this.coursesService.reviewQuiz(user, quizId);
   }
 
 }

@@ -1,5 +1,5 @@
 import { AllowNull, BelongsTo, Column, DataType, Default, ForeignKey, HasMany, HasOne, Model, PrimaryKey, Table } from "sequelize-typescript";
-import { IQuizType } from "../interfaces/courses.interface";
+import { IQuestionType, IQuizType } from "../interfaces/courses.interface";
 import { CoursesModel } from "./course.model";
 import { QuestionModel } from "./question.model";
 
@@ -33,8 +33,16 @@ export class QuizModel extends Model<QuizModel>{
     numberOfQuestions: number;
 
     @AllowNull(false)
-    @Column(DataType.ENUM(IQuizType.multiple_choice, IQuizType.short_answer, IQuizType.true_false))
+    @Column(DataType.ENUM(IQuizType.multiple_choice, IQuizType.short_answer, IQuizType.true_false, IQuizType.theory))
     type: IQuizType;
+
+    @AllowNull(true)
+    @Column(DataType.INTEGER)
+    year: number;
+
+    @AllowNull(false)
+    @Column(DataType.ENUM(IQuestionType.general_question, IQuestionType.past_question, IQuestionType.quick_question))
+    questionType: IQuestionType;
 
     @ForeignKey(() => CoursesModel)
     @AllowNull(false)
@@ -48,3 +56,5 @@ export class QuizModel extends Model<QuizModel>{
     questions: QuestionModel[];
 
 }
+
+

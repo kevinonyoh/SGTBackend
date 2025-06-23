@@ -32,7 +32,7 @@ export class UsersService {
 
     const val =await this.usersRepository.create({...rest, email, fullName, password: hashPassword}, transaction);
 
-    await this.emailService.signUp({email, fullName});
+    // await this.emailService.signUp({email, fullName});
 
 
     const userData = val.toJSON();
@@ -41,9 +41,9 @@ export class UsersService {
 
     const code = helpers.generateOtp();
 
-    await this.cacheStoreService.set(code, email);
+    // await this.cacheStoreService.set(code, email);
 
-    await this.emailService.verificationOtp({email, fullName, code});
+    // await this.emailService.verificationOtp({email, fullName, code});
 
     return userData;
 

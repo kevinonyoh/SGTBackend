@@ -16,7 +16,7 @@ export class ModelRepository<M> implements IModel<M> {
     }
 
     async findAll<T = unknown>(filter: WhereOptions<M> = {}, includes?: FindOptions<T>): Promise<M[]> {
-        return this.model.findAll({where: {...filter}, ...includes});
+        return this.model.findAll({where: filter, ...includes});
     }
 
     async findAllPaginated<T = unknown>(filter: WhereOptions<M> = {}, includes?: FindOptions<T>, pagination?: IPagination): Promise<IPaginatedData> {

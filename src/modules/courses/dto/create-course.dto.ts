@@ -1,6 +1,6 @@
 import { ArrayMinSize, IsArray, IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
 import { ICoursesInterest } from "src/modules/users/interfaces/users.interface";
-import { ICoursesLevel, IQuizType } from "../interfaces/courses.interface";
+import { ICoursesLevel, IQuestionType, IQuizType } from "../interfaces/courses.interface";
 import { Type } from "class-transformer";
 
 export class CreateCourseDto {
@@ -91,6 +91,14 @@ export class CreateQuizDto{
     @IsNotEmpty()
     type: IQuizType;
 
+    @IsNumber()
+    @IsOptional()
+    year: number;
+
+    @IsEnum(IQuestionType)
+    @IsNotEmpty()
+    questionType: IQuestionType;
+
 }
 
 
@@ -164,5 +172,41 @@ export class GetCourseByTypeDto{
     @IsNotEmpty()
     type: ICoursesInterest;
 
+
+}
+
+
+
+export class QuizAttemptDto{
+
+    @IsString()
+    @IsNotEmpty()
+    quizId: string;
+
+    @IsNumber()
+    @IsNotEmpty()
+    attemptNumber: number;
+
+    @IsNumber()
+    @IsOptional()
+    score: number;
+
+    @IsArray()
+    @ValidateNested({ each: true })
+    @ArrayMinSize(1)
+    @Type(() => UserAnswersDto)
+    userAnswers: UserAnswersDto[]
+
+
+}
+
+
+class UserAnswersDto{
+    
+    @IsString()
+    answer: string;
+
+    @IsString()
+    questionId: string;
 
 }
