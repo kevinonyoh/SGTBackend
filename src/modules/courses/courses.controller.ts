@@ -95,4 +95,10 @@ export class CoursesController {
       return await this.coursesService.reviewQuiz(user, quizId);
   }
 
+  @Get("question/:quizId")
+  @ResponseMessage("questions")
+  async getQuestions(@Param("quizId") quizId: string, @Query() query: GetCourseDto){
+    return await this.coursesService.findQuestion(quizId, query);
+  }
+
 }

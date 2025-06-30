@@ -69,6 +69,18 @@ export class CoursesService {
 
   }
 
+  async findQuestion(quizId: string, data: GetCourseDto){
+
+    const {page, limit} = data;
+
+    const quiz = await this.quizRepository.findOne({id: quizId});
+
+    if(!quiz) throw new BadRequestException("Quiz does not exist");
+
+    return await this.questionRepository.findAllPaginated({quizId}, null, {page, limit});
+
+  }
+
 
   async findCourse(id: string){
     
