@@ -45,7 +45,7 @@ export class CoursesService {
 
     if(!course) throw new BadRequestException("Course does not exist");
 
-    await this.quizRepository.create({courseId, ...data}, transaction);
+     return  await this.quizRepository.create({courseId, ...data}, transaction);
 
   }
 

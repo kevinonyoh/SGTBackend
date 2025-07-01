@@ -79,14 +79,6 @@ export class CreateQuizDto{
     @IsNotEmpty()
     instruction: string;
 
-    @IsNumber()
-    @IsOptional()
-    timeLimit: number;
-
-    @IsNumber()
-    @IsNotEmpty()
-    numberOfQuestions: number;
-
     @IsEnum(IQuizType)
     @IsNotEmpty()
     type: IQuizType;

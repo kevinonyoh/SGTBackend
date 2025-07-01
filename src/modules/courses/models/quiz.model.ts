@@ -24,14 +24,6 @@ export class QuizModel extends Model<QuizModel>{
     @Column
     instruction: string;
 
-    @AllowNull
-    @Column(DataType.INTEGER)
-    timeLimit: number;
-
-    @AllowNull(false)
-    @Column(DataType.INTEGER)
-    numberOfQuestions: number;
-
     @AllowNull(false)
     @Column(DataType.ENUM(IQuizType.multiple_choice, IQuizType.short_answer, IQuizType.true_false, IQuizType.theory))
     type: IQuizType;
