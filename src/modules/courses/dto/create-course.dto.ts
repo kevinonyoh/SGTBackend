@@ -91,6 +91,10 @@ export class CreateQuizDto{
     @IsNotEmpty()
     questionType: IQuestionType;
 
+    @IsString()
+    @IsOptional()
+    chapterId: string;
+
 }
 
 

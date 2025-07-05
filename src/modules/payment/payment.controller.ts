@@ -87,5 +87,15 @@ export class PaymentController {
      return await this.paymentService.getCourse(user, courseId);
   }
 
+  @Role(IRole.SUPER_ADMIN)
+  @Get("top-selling-courses")
+  @HttpCode(200)
+  @ResponseMessage("Top Selling Courses data")
+  async viewTopSellingCourses(){
+
+    return await this.paymentService.getTopSellingCourses();
+
+  }
+
  
 }

@@ -7,7 +7,7 @@ import { IUser } from '../users/interfaces/users.interface';
 import * as helpers from 'src/common/utils/helper';
 import { UsersService } from '../users/users.service';
 import { IPayment, IStatus } from './interface/payment.interface';
-import { Op, Transaction } from 'sequelize';
+import { Op, Sequelize, Transaction } from 'sequelize';
 import Flutterwave from 'flutterwave-node-v3';
 import { PaymentRepository } from './repositories/payment.repository';
 import { UsersModel } from '../users/models/users.model.';
@@ -212,6 +212,29 @@ export class PaymentService {
     return hasAccess;
 
   }
+
+
+  async getTopSellingCourses() {
+    const includeOption = {
+       // ✅ move `where` inside here
+      attributes: [
+        'courseId',
+        [Sequelize.fn('COUNT', Sequelize.col('course_id')), 'salesCount']
+      ],
+      include: [
+        {
+          model: CoursesModel,
+          attributes: ['id', 'title', 'price']
+        }
+      ],
+      group: ['courseId', 'course.id'], // ✅ 'course.id' assumes no alias
+      order: [[Sequelize.literal(`"salesCount"`), 'DESC']],
+      limit: 10
+    };
+  
+    return await this.paymentRepository.findAll(  { status: IStatus.successful } , <unknown>includeOption);
+  }
+  
 
 }
 

@@ -2,6 +2,7 @@ import { AllowNull, BelongsTo, Column, DataType, Default, ForeignKey, HasMany, H
 import { IQuestionType, IQuizType } from "../interfaces/courses.interface";
 import { CoursesModel } from "./course.model";
 import { QuestionModel } from "./question.model";
+import { ChapterModel } from "./chapter.model";
 
 @Table({
     tableName: "quizzes",
@@ -41,11 +42,20 @@ export class QuizModel extends Model<QuizModel>{
     @Column(DataType.UUID)
     courseId: string;
 
+
+    @ForeignKey(() => ChapterModel)
+    @AllowNull(true)
+    @Column(DataType.UUID)
+    chapterId: string;
+    
+
     @BelongsTo(() => CoursesModel)
     course: CoursesModel;
 
     @HasMany(() => QuestionModel)
     questions: QuestionModel[];
+
+
 
 }
 
