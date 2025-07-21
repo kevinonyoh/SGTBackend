@@ -25,7 +25,7 @@ export class CoursesController {
     return await this.coursesService.createCourse(body, transaction)
   }
 
-  @Role(IRole.SUPER_ADMIN, IRole.MANAGE_COURSES)
+  @Role(IRole.SUPER_ADMIN)
   @Put("create/chapter/:courseId")
   @HttpCode(200)
   @ResponseMessage("chapter successfully added")
@@ -33,7 +33,7 @@ export class CoursesController {
     return await this.coursesService.addChapter(courseId, body, transaction);
   }
 
-  @Role(IRole.SUPER_ADMIN, IRole.MANAGE_COURSES)
+  @Role(IRole.SUPER_ADMIN)
   @Put("create/quiz/:courseId")
   @HttpCode(200)
   @ResponseMessage("quiz successfully added")
@@ -49,7 +49,7 @@ export class CoursesController {
     return await this.coursesService.addQuestionToQuiz(quizId, body, transaction);
   }
 
-  @Role(IRole.SUPER_ADMIN, IRole.MANAGE_COURSES)
+  @Role(IRole.SUPER_ADMIN)
   @Delete("remove/:id")
   @HttpCode(204)
   @ResponseMessage("course remove successfully")
