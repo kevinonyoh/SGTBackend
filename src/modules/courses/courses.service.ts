@@ -182,9 +182,7 @@ export class CoursesService {
 
 
     const questions = await this.questionRepository.findAll({
-      id: {
-        [Op.in]: questionIds
-      }
+      quizId
     });
    
 
