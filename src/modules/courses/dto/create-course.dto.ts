@@ -1,6 +1,6 @@
-import { ArrayMinSize, IsArray, IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
+import { ArrayMinSize, IsArray, IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateIf, ValidateNested } from "class-validator";
 import { ICoursesInterest } from "src/modules/users/interfaces/users.interface";
-import { ICoursesLevel, IQuestionType, IQuizType } from "../interfaces/courses.interface";
+import { ICoursesLevel, IDiet, IQuestionType, IQuizType } from "../interfaces/courses.interface";
 import { Type } from "class-transformer";
 
 export class CreateCourseDto {
@@ -94,6 +94,14 @@ export class CreateQuizDto{
     @IsString()
     @IsOptional()
     chapterId: string;
+
+    @IsEnum(IDiet)
+    @IsOptional()
+    diet: IDiet;
+
+    @IsNumber()
+    @IsOptional()
+    default: number;
 
 }
 
@@ -199,8 +207,8 @@ export class QuizAttemptDto{
 
 class UserAnswersDto{
     
-    @IsString()
-    answer: string;
+    @ValidateIf(() => true)
+    answer: any;
 
     @IsString()
     questionId: string;

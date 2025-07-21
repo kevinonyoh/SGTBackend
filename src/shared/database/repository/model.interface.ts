@@ -1,4 +1,5 @@
 import { FindOptions, Transaction, WhereOptions } from "sequelize";
+import { Literal } from "sequelize/types/utils";
 
 export interface IModel<M> {
     create<T = unknown>(data: T, transaction: Transaction | null);
@@ -21,6 +22,7 @@ export interface IModel<M> {
 export interface IPagination {
     page?: number;
     limit?: number;
+    order?: [string, 'ASC' | 'DESC'][] | string | Literal;
 }
 
 export interface IPaginatedData {

@@ -6,7 +6,7 @@ import { ChapterRepository } from './repositories/chapter.repository';
 import { QuestionRepository } from './repositories/question.repository';
 import { QuizRepository } from './repositories/quiz.repository';
 import { QuizAttemptRepository } from './repositories/QuizAttempt.repository';
-import { Op, Transaction } from 'sequelize';
+import { Op, Sequelize, Transaction } from 'sequelize';
 import { QuizModel } from './models/quiz.model';
 import { ChapterModel } from './models/chapter.model';
 import { IUser } from '../users/interfaces/users.interface';
@@ -75,7 +75,13 @@ export class CoursesService {
 
     const quiz = await this.quizRepository.findOne({id: quizId});
 
+    const quizJson = quiz.toJSON();
+
     if(!quiz) throw new BadRequestException("Quiz does not exist");
+
+    const defaultLimit = quizJson.default;
+    
+    if( defaultLimit > 0 )  return await this.questionRepository.findAllPaginated({quizId}, null, {order: Sequelize.literal('RANDOM()'), limit: defaultLimit });
 
     return await this.questionRepository.findAllPaginated({quizId}, null, {page, limit});
 
@@ -145,6 +151,9 @@ export class CoursesService {
   }
 
 
+
+
+
   async userAttemptQuiz(user: IUser, data: QuizAttemptDto, transaction: Transaction){
     
      const payload = {
@@ -159,6 +168,7 @@ export class CoursesService {
   }
 
 
+
   async reviewQuiz(user: IUser, quizId: string){
 
     
@@ -171,7 +181,11 @@ export class CoursesService {
     const questionIds = userAttemptJson.userAnswers.map(answer => answer.questionId);
 
 
-    const questions = await this.questionRepository.findAll({quizId});
+    const questions = await this.questionRepository.findAll({
+      id: {
+        [Op.in]: questionIds
+      }
+    });
    
 
     const questionWithAnswer = questions.map(question => {

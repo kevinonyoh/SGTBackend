@@ -34,3 +34,9 @@ export enum IQuestionType{
     quick_question = "quick_question",
     general_question = "general_question"
 }
+
+
+export enum IDiet{
+   may = 'may',
+   november = 'november'
+}
