@@ -134,6 +134,33 @@ export class CreateQuestionDto{
 }
 
 
+export class UpdateQuestionDto{
+    @IsString()
+    @IsOptional()
+    questionContent: string;
+
+    @IsString()
+    @IsOptional()
+    imagePath: string;
+
+    @IsString()
+    @IsOptional()
+    imageType: string;
+
+    @IsString()
+    @IsOptional()
+    publicId: string;
+
+    @IsArray()
+    @IsOptional()
+    @ValidateNested({ each: true })
+    @ArrayMinSize(1)
+    @Type(() => AnswerOptionDTO)
+    answerOptions: AnswerOptionDTO[]
+}
+
+
+
 class AnswerOptionDTO{
 
     @IsString()
@@ -213,4 +240,36 @@ class UserAnswersDto{
     @IsString()
     questionId: string;
 
+}
+
+
+export class UpdateCourseDto{
+    
+    @IsString()
+    @IsOptional()
+    title: string;
+
+    @IsString()
+    @IsOptional()
+    imageUrl: string;
+
+    @IsNumber()
+    @IsOptional()
+    price: number;
+
+    @IsEnum(ICoursesInterest)
+    @IsOptional()
+    courseType: ICoursesInterest;
+
+    @IsEnum(ICoursesLevel)
+    @IsOptional()
+    courseLevel: ICoursesLevel;
+
+}
+
+export class GetQuizByTypeDto{
+   
+    @IsEnum(IQuestionType)
+    @IsNotEmpty()
+    questionType: IQuestionType;
 }

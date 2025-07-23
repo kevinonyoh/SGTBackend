@@ -1,5 +1,5 @@
 import { BadGatewayException, BadRequestException, Injectable } from '@nestjs/common';
-import {  GetPageDto, MakePaymentDto, VerifyPaymentDto } from './dto/create-payment.dto';
+import {  GetMonthlyDto, GetPageDto, MakePaymentDto, VerifyPaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { FlutterwaveGateway } from './payment-factory/payment-gateway/flutterwave.gateway';
 import { CoursesService } from '../courses/courses.service';
@@ -216,7 +216,7 @@ export class PaymentService {
 
   async getTopSellingCourses() {
     const includeOption = {
-       // ✅ move `where` inside here
+     
       attributes: [
         'courseId',
         [Sequelize.fn('COUNT', Sequelize.col('course_id')), 'salesCount']
@@ -227,12 +227,49 @@ export class PaymentService {
           attributes: ['id', 'title', 'price']
         }
       ],
-      group: ['courseId', 'course.id'], // ✅ 'course.id' assumes no alias
+      group: ['courseId', 'course.id'], 
       order: [[Sequelize.literal(`"salesCount"`), 'DESC']],
       limit: 10
     };
   
     return await this.paymentRepository.findAll(  { status: IStatus.successful } , <unknown>includeOption);
+  }
+
+  async findMonthlyTotalRevenue(data: GetMonthlyDto){
+    
+    const {month, year} = data;
+
+    const startOfMonth = new Date(year, month - 1, 1); 
+    
+    const startOfNextMonth = new Date(year, month, 1);
+
+    const includeOption = {
+      include: [
+        {
+          model: CoursesModel,
+          attributes: ['price']
+        }
+      ],
+    }
+
+    const val = await this.paymentRepository.findAll({ 
+      status: IStatus.successful,
+      createdAt: {
+        [Op.gte]: startOfMonth,
+        [Op.lt]: startOfNextMonth,
+      }
+    }, <unknown>includeOption)
+
+    const total = val.reduce((sum, tx) => {
+      const price = typeof tx.course.price === "string" ? parseFloat(tx.course.price) : tx.course.price;
+      return sum + price;
+    }, 0);
+
+    return {
+      total, val
+    };
+
+
   }
   
 

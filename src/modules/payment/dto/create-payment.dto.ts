@@ -31,3 +31,16 @@ export class VerifyPaymentDto{
     tx_ref: string;
 
 }
+
+
+export class GetMonthlyDto{
+
+    @IsNumber()
+    @IsNotEmpty()
+    month: number;
+
+    @IsNumber()
+    @IsNotEmpty()
+    year: number;
+ 
+ }

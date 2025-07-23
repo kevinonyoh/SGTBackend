@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, UseGuards, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, UseGuards, Put, Query } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { AdminResetPasswordDto, CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
@@ -8,10 +8,15 @@ import { Transaction } from 'sequelize';
 import { Role } from 'src/common/decorators/role.decorator';
 import { Admin } from 'src/common/decorators/admin.decorator';
 import { IAdmin, IRole } from './interfaces/admin.interface';
+import { PageLimitDto } from '../users/dto/create-user.dto';
+import { UsersService } from '../users/users.service';
 
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(
+    private readonly adminService: AdminService,
+    private readonly userService: UsersService
+    ) {}
 
   @Role(IRole.SUPER_ADMIN)
   @Post("create")
@@ -37,5 +42,20 @@ export class AdminController {
     return await this.adminService.adminResetPassword(admin, body, transaction);
   }
 
+  @Role(IRole.SUPER_ADMIN)
+  @Get("/all-users")
+  @HttpCode(200)
+  @ResponseMessage("All users details")
+  async getAllUsers(@Query() body:PageLimitDto){
+     return await this.userService.findAllUsers(body);
+  }
+
+  @Role(IRole.SUPER_ADMIN)
+  @Get("/all-admins")
+  @HttpCode(200)
+  @ResponseMessage("All Admins details")
+  async getAllAdmins(@Query() body: PageLimitDto){
+    return await this.adminService.findAllAdmin(body);
+  }
 
 }

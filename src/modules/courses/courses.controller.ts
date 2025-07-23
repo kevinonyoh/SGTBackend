@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put,  Query } from '@nestjs/common';
 import { CoursesService } from './courses.service';
-import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseDto, QuizAttemptDto } from './dto/create-course.dto';
-import { UpdateCourseDto } from './dto/update-course.dto';
+import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseDto, GetQuizByTypeDto, QuizAttemptDto, UpdateCourseDto, UpdateQuestionDto } from './dto/create-course.dto';
 import { Role } from 'src/common/decorators/role.decorator';
 import { IRole } from '../admin/interfaces/admin.interface';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
@@ -10,6 +9,7 @@ import { Transaction } from 'sequelize';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ICoursesInterest, IUser } from '../users/interfaces/users.interface';
 import { User } from 'src/common/decorators/user.decorator';
+import { IQuestionType } from './interfaces/courses.interface';
 
 
 
@@ -99,6 +99,32 @@ export class CoursesController {
   @ResponseMessage("questions")
   async getQuestions(@Param("quizId") quizId: string, @Query() query: GetCourseDto){
     return await this.coursesService.findQuestion(quizId, query);
+  }
+
+  @Get("chapter/:courseId")
+  @ResponseMessage("chapters")
+  async getChapters(@Param("courseId") courseId: string){
+    return await this.coursesService.findChapters(courseId);
+  }
+
+  @Get("quiz/:courseId")
+  @ResponseMessage("quiz type")
+  async getQuizByType(@Param("courseId") courseId: string, @Query() query: GetQuizByTypeDto){
+    return await this.coursesService.findQuizByQuestionType(courseId, query);
+  }
+
+  @Role(IRole.SUPER_ADMIN)
+  @Put("update-course/:courseId")
+  @ResponseMessage("course updated successfully")
+  async updateCourse(@Param("courseId") courseId: string, @Body() body: UpdateCourseDto, @TransactionParam() transaction: Transaction){
+    return await this.coursesService.updateCourse(courseId, body, transaction);
+  }
+
+  @Role(IRole.SUPER_ADMIN, IRole.MANAGE_COURSES)
+  @Put("update-question/:quizId/:questionId")
+  @ResponseMessage("question updated successfully")
+  async updateQuestion(@Param("quizId") quizId: string, @Param("questionId") questionId: string, @Body() body: UpdateQuestionDto, @TransactionParam() transaction: Transaction){
+    return await this.coursesService.updateQuestion(quizId, questionId, body, transaction);
   }
 
 }

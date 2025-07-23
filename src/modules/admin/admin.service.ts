@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { AdminResetPasswordDto, CreateAdminDto, RemoveAdminDto } from './dto/create-admin.dto';
+import { AdminResetPasswordDto, CreateAdminDto, PageLimitDto, RemoveAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { AdminRepository } from './repositories/admin.repository';
 import { Transaction } from 'sequelize';
@@ -77,6 +77,18 @@ export class AdminService {
 
 
 
+  }
+
+  async findAllAdmin(data: PageLimitDto){
+       const {page, limit} = data;
+
+       const includeOption = {
+        attributes: { exclude: ['password'] },   
+        order: [['createdAt', 'DESC']]
+  
+      }
+
+       return await this.adminRepository.findAllPaginated({}, <unknown>includeOption, {page, limit});
   }
 
 

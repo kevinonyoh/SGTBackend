@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { CreateUserDto, EmailVerificationDto, ForgotPasswordDto, GetOtpDto, VerifyForgotPasswordOtpDto, changePasswordDto,  } from './dto/create-user.dto';
+import { CreateUserDto, EmailVerificationDto, ForgotPasswordDto, GetOtpDto, PageLimitDto, VerifyForgotPasswordOtpDto, changePasswordDto,  } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './repositories/users.repository';
 import { Transaction } from 'sequelize';
@@ -155,6 +155,22 @@ export class UsersService {
 
 
     return await this.usersRepository.create(payload, transaction);
+
+   }
+
+   async findAllUsers(data: PageLimitDto){
+     
+    const {page, limit} = data;
+
+   
+
+    const includeOption = {
+      attributes: { exclude: ['password'] },   
+      order: [['createdAt', 'DESC']]
+
+    }
+
+    return await this.usersRepository.findAllPaginated({}, <unknown>includeOption, {page, limit});
 
    }
 }

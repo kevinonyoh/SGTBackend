@@ -1,4 +1,4 @@
-import { ArrayNotEmpty, IsArray, IsEmail, IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { IRole } from "../interfaces/admin.interface";
 import { Type } from "class-transformer";
 
@@ -44,4 +44,15 @@ export class AdminResetPasswordDto{
     @IsNotEmpty()
     password: string;
 
+}
+
+
+export class PageLimitDto{
+    @IsNumber()
+    @IsOptional()
+    page: number;
+
+    @IsNumber()
+    @IsOptional()
+    limit: number;
 }

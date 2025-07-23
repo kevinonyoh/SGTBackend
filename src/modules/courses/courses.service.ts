@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, QuizAttemptDto } from './dto/create-course.dto';
-import { UpdateCourseDto } from './dto/update-course.dto';
+import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuizByTypeDto, QuizAttemptDto, UpdateCourseDto, UpdateQuestionDto } from './dto/create-course.dto';
 import { CoursesRepository } from './repositories/course.repository';
 import { ChapterRepository } from './repositories/chapter.repository';
 import { QuestionRepository } from './repositories/question.repository';
@@ -10,7 +9,8 @@ import { Op, Sequelize, Transaction } from 'sequelize';
 import { QuizModel } from './models/quiz.model';
 import { ChapterModel } from './models/chapter.model';
 import { IUser } from '../users/interfaces/users.interface';
-import { IQuizType } from './interfaces/courses.interface';
+import { IQuestionType, IQuizType } from './interfaces/courses.interface';
+import { CoursesModel } from './models/course.model';
 
 @Injectable()
 export class CoursesService {
@@ -178,36 +178,85 @@ export class CoursesService {
 
     const userAttemptJson = userAttempt.toJSON();
 
-    const questionIds = userAttemptJson.userAnswers.map(answer => answer.questionId);
+    const questionIds = userAttemptJson.userAnswers.map(answer => String(answer.questionId));
 
+    console.log(questionIds);
 
     const questions = await this.questionRepository.findAll({
-      quizId
+      where: { id: { [Op.in]: questionIds } }
     });
-   
+  
+    return questions;
+  
+    // const questionWithAnswer = questions.map(question => {
 
-    const questionWithAnswer = questions.map(question => {
-        
-      const userAnswer = userAttemptJson.userAnswers.find(answer => answer.questionId === question.id);
+    //   console.log(question);
+      
+    //   const userAnswer = userAttemptJson.userAnswers.find(answer => answer.questionId === question.id);
 
-      return {
-        ...question.toJSON(),
-        userAnswer: userAnswer?.answer || null
-      };
+    //   return {
+    //     ...question.toJSON(),
+    //     userAnswer: userAnswer?.answer || null
+    //   };
 
-    });
+    // });
 
-    const {score, attemptNumber} = userAttemptJson;
+    // const {score, attemptNumber} = userAttemptJson;
 
-    return {
-      score,
-      attemptNumber,
-      questionWithAnswer
-    }
+    // return {
+    //   score,
+    //   attemptNumber,
+    //   questionWithAnswer
+    // }
 
   }
 
 
+  async findChapters(courseId: string){
+    const includeOption = {
+      include: [
+        {
+          model: ChapterModel
+        }
+      ],
+
+      order: [['createdAt', 'DESC']]
+
+    }
+
+    return await this.courseRepository.findAll({id: courseId}, <unknown>includeOption);
+
+  }
+
+  async findQuizByQuestionType(courseId: string, data: GetQuizByTypeDto){
+    
+    const {questionType} = data;
+
+    const includeOption = {
+      include: [
+        {
+          model: CoursesModel
+        }
+      ],
+
+      order: [['createdAt', 'DESC']]
+
+    }
+
+    return await this.quizRepository.findAll({ courseId, questionType }, <unknown>includeOption);
+  }
+
+  async updateCourse(id: string, data: UpdateCourseDto, transaction: Transaction){
+    
+    return await this.courseRepository.update({id}, {...data}, transaction);
+
+  }
+
+  async updateQuestion(quizId: string, id: string, data: UpdateQuestionDto, transaction: Transaction){
+    
+    return await this.questionRepository.update({quizId, id}, {...data}, transaction);
+
+  }
   
 
 

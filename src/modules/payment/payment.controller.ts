@@ -3,7 +3,7 @@ import { PaymentService } from './payment.service';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
 import { TransactionParam } from 'src/common/decorators/transaction-param.decorator';
 import { Transaction } from 'sequelize';
-import { GetPageDto, MakePaymentDto, VerifyPaymentDto } from './dto/create-payment.dto';
+import { GetMonthlyDto, GetPageDto, MakePaymentDto, VerifyPaymentDto } from './dto/create-payment.dto';
 import { User } from 'src/common/decorators/user.decorator';
 import { IUser } from '../users/interfaces/users.interface';
 import { Public } from 'src/common/decorators/public.decorator';
@@ -94,6 +94,16 @@ export class PaymentController {
   async viewTopSellingCourses(){
 
     return await this.paymentService.getTopSellingCourses();
+
+  }
+
+  @Role(IRole.SUPER_ADMIN)
+  @Get("total-revenue-per-month")
+  @HttpCode(200)
+  @ResponseMessage("Revenue of month")
+  async getMonthlyRevenue(@Query() query: GetMonthlyDto){
+    
+    return await this.paymentService.findMonthlyTotalRevenue(query);
 
   }
 

@@ -1,4 +1,4 @@
-import { ArrayNotEmpty, IsArray, IsEmail, IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { ICoursesInterest } from "../interfaces/users.interface";
 
 export class CreateUserDto {
@@ -79,4 +79,15 @@ export class changePasswordDto{
     @IsNotEmpty()
     newPassword: string;
 
+}
+
+
+export class PageLimitDto{
+    @IsNumber()
+    @IsNotEmpty()
+    page: number;
+ 
+    @IsNumber()
+    @IsNotEmpty()
+    limit: number;
 }
