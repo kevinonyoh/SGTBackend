@@ -95,10 +95,10 @@ export class CoursesController {
       return await this.coursesService.reviewQuiz(user, quizId);
   }
 
-  @Get("question/:quizId")
+  @Get("question/:id")
   @ResponseMessage("questions")
-  async getQuestions(@Param("quizId") quizId: string, @Query() query: GetCourseDto){
-    return await this.coursesService.findQuestion(quizId, query);
+  async getQuestions(@Param("id") id: string, @Query() query: GetCourseDto){
+    return await this.coursesService.findQuestion(id, query);
   }
 
   @Get("chapter/:courseId")

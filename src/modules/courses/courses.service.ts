@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuizByTypeDto, QuizAttemptDto, UpdateCourseDto, UpdateQuestionDto } from './dto/create-course.dto';
+import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuestionDto, GetQuizByTypeDto, QuizAttemptDto, UpdateCourseDto, UpdateQuestionDto } from './dto/create-course.dto';
 import { CoursesRepository } from './repositories/course.repository';
 import { ChapterRepository } from './repositories/chapter.repository';
 import { QuestionRepository } from './repositories/question.repository';
@@ -11,6 +11,7 @@ import { ChapterModel } from './models/chapter.model';
 import { IUser } from '../users/interfaces/users.interface';
 import { IQuestionType, IQuizType } from './interfaces/courses.interface';
 import { CoursesModel } from './models/course.model';
+import { QuestionModel } from './models/question.model';
 
 @Injectable()
 export class CoursesService {
@@ -71,7 +72,9 @@ export class CoursesService {
 
   async findQuestion(quizId: string, data: GetCourseDto){
 
-    const {page, limit} = data;
+     const {page, limit} = data;
+
+    
 
     const quiz = await this.quizRepository.findOne({id: quizId});
 
@@ -81,9 +84,9 @@ export class CoursesService {
 
     const defaultLimit = quizJson.default;
     
-    if( defaultLimit > 0 )  return await this.questionRepository.findAllPaginated({quizId}, null, {order: Sequelize.literal('RANDOM()'), limit: defaultLimit });
+    // if( defaultLimit > 0  )  return await this.questionRepository.findAllPaginated({quizId}, null, {order: Sequelize.literal('RANDOM()'), limit: defaultLimit });
 
-    return await this.questionRepository.findAllPaginated({quizId}, null, {page, limit});
+    return await this.questionRepository.findAll({quizId});
 
   }
 
@@ -236,6 +239,9 @@ export class CoursesService {
       include: [
         {
           model: CoursesModel
+        },
+        {
+          model: QuestionModel
         }
       ],
 
@@ -257,7 +263,6 @@ export class CoursesService {
     return await this.questionRepository.update({quizId, id}, {...data}, transaction);
 
   }
-  
 
 
 }

@@ -105,6 +105,21 @@ export class CreateQuizDto{
 
 }
 
+export class GetQuestionDto{
+  
+    @IsString()
+    @IsNotEmpty()
+    quizId: string;
+
+    @IsEnum(IQuestionType)
+    @IsNotEmpty()
+    questionType: IQuestionType;
+
+    @IsString()
+    @IsOptional()
+    id: string;
+} 
+
 
 export class CreateQuestionDto{
 
