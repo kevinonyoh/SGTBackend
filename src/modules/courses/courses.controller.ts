@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put,  Query } from '@nestjs/common';
 import { CoursesService } from './courses.service';
-import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuizByTypeDto, QuizAttemptDto, UpdateCourseDto, UpdateQuestionDto } from './dto/create-course.dto';
+import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuizByTypeDto, QuizAttemptDto, RatingDto, UpdateCourseDto, UpdateQuestionDto } from './dto/create-course.dto';
 import { Role } from 'src/common/decorators/role.decorator';
 import { IRole } from '../admin/interfaces/admin.interface';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
@@ -74,6 +74,12 @@ export class CoursesController {
      return await this.coursesService.findAllCourse(body);
   }
 
+  @Put("rating/:courseId")
+  @HttpCode(200)
+  @ResponseMessage("course successfully rate")
+  async putRateCourse(@Param("courseId") id:string, @User() user:IUser, @Body() body: RatingDto, @TransactionParam() transaction: Transaction){
+     return await this.coursesService.rateCourse(id, user, body, transaction);
+  }
 
   @Post("quiz-attempt")
   @ResponseMessage("quiz answers submitted successfully")

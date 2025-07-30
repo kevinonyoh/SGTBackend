@@ -12,6 +12,6 @@ import { HttpRequestModule } from 'src/shared/http-request/http-request.module';
 @Module({
   imports: [SequelizeModule.forFeature([PaymentModel]), CoursesModule, UsersModule, HttpRequestModule],
   controllers: [PaymentController],
-  providers: [PaymentService, PaymentRepository, FlutterwaveGateway],
+  providers: [PaymentService, PaymentRepository, FlutterwaveGateway]
 })
 export class PaymentModule {}

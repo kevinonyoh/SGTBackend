@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuestionDto, GetQuizByTypeDto, QuizAttemptDto, UpdateCourseDto, UpdateQuestionDto } from './dto/create-course.dto';
+import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuestionDto, GetQuizByTypeDto, QuizAttemptDto, RatingDto, UpdateCourseDto, UpdateQuestionDto } from './dto/create-course.dto';
 import { CoursesRepository } from './repositories/course.repository';
 import { ChapterRepository } from './repositories/chapter.repository';
 import { QuestionRepository } from './repositories/question.repository';
@@ -12,6 +12,7 @@ import { IUser } from '../users/interfaces/users.interface';
 import { IQuestionType, IQuizType } from './interfaces/courses.interface';
 import { CoursesModel } from './models/course.model';
 import { QuestionModel } from './models/question.model';
+import { PaymentRepository } from '../payment/repositories/payment.repository';
 
 @Injectable()
 export class CoursesService {
@@ -20,7 +21,8 @@ export class CoursesService {
     private readonly chapterRepository: ChapterRepository,
     private readonly questionRepository: QuestionRepository,
     private readonly quizRepository: QuizRepository,
-    private readonly quizAttemptRepository:QuizAttemptRepository
+    private readonly quizAttemptRepository:QuizAttemptRepository,
+    private readonly paymentRepository: PaymentRepository,
   ){}
 
   async createCourse(data: CreateCourseDto, transaction: Transaction){
@@ -93,7 +95,20 @@ export class CoursesService {
 
   async findCourse(id: string){
     
-    return await this.courseRepository.findOne({id});
+    const includeOption = {
+      include: [
+        {
+          model: ChapterModel
+        },
+        {
+          model: QuizModel
+        }
+      ],
+
+      order: [['createdAt', 'DESC']]
+
+    }
+    return await this.courseRepository.findOne({id}, <unknown>includeOption);
 
   }
 
@@ -102,6 +117,14 @@ export class CoursesService {
     const {page, limit } = data;
 
     const includeOption = {
+      include: [
+        {
+          model: ChapterModel
+        },
+        {
+          model: QuizModel
+        }
+      ],
       order: [['createdAt', 'DESC']]
     }
 
@@ -178,6 +201,16 @@ export class CoursesService {
 
   }
 
+
+  async rateCourse(id: string, user:IUser, data:RatingDto, transaction: Transaction){
+    
+    const userData = await this.paymentRepository.findOne({userId: user.id, id});
+
+    if(!userData) throw new BadRequestException("you haven't buy the course yet");
+
+    return await this.courseRepository.update({id}, {...data}, transaction);
+
+  }
 
   async findChapters(courseId: string){
     const includeOption = {

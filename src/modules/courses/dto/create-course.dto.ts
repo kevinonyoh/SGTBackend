@@ -1,4 +1,4 @@
-import { ArrayMinSize, IsArray, IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateIf, ValidateNested } from "class-validator";
+import { ArrayMinSize, IsArray, IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min, ValidateIf, ValidateNested } from "class-validator";
 import { ICoursesInterest } from "src/modules/users/interfaces/users.interface";
 import { ICoursesLevel, IDiet, IQuestionType, IQuizType } from "../interfaces/courses.interface";
 import { Type } from "class-transformer";
@@ -201,6 +201,13 @@ export class GetCourseDto{
     @IsOptional()
     limit: number;
 
+}
+
+export class RatingDto{
+    @IsNumber()
+    @Max(5)
+    @Min(1)
+    rating: number;
 }
 
 

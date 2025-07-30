@@ -11,11 +11,12 @@ import { ChapterRepository } from './repositories/chapter.repository';
 import { QuizAttemptRepository } from './repositories/QuizAttempt.repository';
 import { QuizRepository } from './repositories/quiz.repository';
 import { QuestionRepository } from './repositories/question.repository';
+import { PaymentRepository } from '../payment/repositories/payment.repository';
 
 @Module({
   imports: [SequelizeModule.forFeature([CoursesModel, ChapterModel, QuizModel, QuestionModel, QuizAttemptModel])],
   controllers: [CoursesController],
-  providers: [CoursesService, CoursesRepository, ChapterRepository, QuizAttemptRepository, QuizRepository, QuestionRepository],
+  providers: [CoursesService, CoursesRepository, ChapterRepository, QuizAttemptRepository, QuizRepository, QuestionRepository, PaymentRepository],
   exports: [CoursesService]
 })
 export class CoursesModule {}

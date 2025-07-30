@@ -30,6 +30,10 @@ export class CoursesModel extends Model<CoursesModel>{
     @Column(DataType.DECIMAL(10, 2))
     price: number;
 
+    @AllowNull(true)
+    @Column(DataType.INTEGER)
+    rating: number;
+
     @AllowNull(false)
     @Column(DataType.ENUM(ICoursesInterest.ATS, ICoursesInterest.ICAN, ICoursesInterest.Olevel))
     courseType: ICoursesInterest;
