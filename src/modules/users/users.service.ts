@@ -2,12 +2,15 @@ import { BadRequestException, ForbiddenException, Injectable, UnauthorizedExcept
 import { CreateUserDto, EmailVerificationDto, ForgotPasswordDto, GetOtpDto, PageLimitDto, VerifyForgotPasswordOtpDto, changePasswordDto,  } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './repositories/users.repository';
-import { Transaction } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 import * as bcrypt from "bcrypt";
 import { EmailService } from 'src/shared/notification/email/email.service';
 import * as helpers from 'src/common/utils/helper';
 import { CacheStoreService } from 'src/shared/cache-store/cache-store.service';
 import { IUser } from './interfaces/users.interface';
+import { PaymentModel } from '../payment/model/payment.model';
+import { IStatus } from '../payment/interface/payment.interface';
+import { CoursesModel } from '../courses/models/course.model';
 
 @Injectable()
 export class UsersService {
@@ -162,10 +165,27 @@ export class UsersService {
      
     const {page, limit} = data;
 
-   
-
     const includeOption = {
       attributes: { exclude: ['password'] },   
+      include: [
+        {
+          model: PaymentModel,
+          required: false, 
+          where: {
+            [Op.or]: [
+              { status: IStatus.successful },
+              { status: null }
+            ]
+          },
+          include: [
+            {
+              model: CoursesModel,
+              attributes: ['id', 'title'],
+              required: false
+            }
+          ]
+        }
+      ],
       order: [['createdAt', 'DESC']]
 
     }
@@ -174,3 +194,5 @@ export class UsersService {
 
    }
 }
+
+

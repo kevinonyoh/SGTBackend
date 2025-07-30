@@ -215,7 +215,7 @@ export class GetCourseByTypeDto{
     limit: number;
 
     @IsEnum(ICoursesInterest)
-    @IsNotEmpty()
+    @IsOptional()
     type: ICoursesInterest;
 
 

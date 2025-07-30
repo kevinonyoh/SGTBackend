@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put,  Query } from '@nestjs/common';
 import { CoursesService } from './courses.service';
-import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseDto, GetQuizByTypeDto, QuizAttemptDto, UpdateCourseDto, UpdateQuestionDto } from './dto/create-course.dto';
+import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuizByTypeDto, QuizAttemptDto, UpdateCourseDto, UpdateQuestionDto } from './dto/create-course.dto';
 import { Role } from 'src/common/decorators/role.decorator';
 import { IRole } from '../admin/interfaces/admin.interface';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
@@ -70,15 +70,8 @@ export class CoursesController {
   @Get()
   @HttpCode(200)
   @ResponseMessage("Courses details")
-  async getCourses(@Query() body:GetCourseDto){
+  async getCourses(@Query() body:GetCourseByTypeDto){
      return await this.coursesService.findAllCourse(body);
-  }
-
-  @Public()
-  @Get("type/:courseType")
-  @ResponseMessage("course details")
-  async getCourseByType(@Param("courseType") courseType: ICoursesInterest, @Query() query: GetCourseDto){
-      return await this.coursesService.findByType(courseType, query);
   }
 
 

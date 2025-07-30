@@ -84,10 +84,10 @@ export class changePasswordDto{
 
 export class PageLimitDto{
     @IsNumber()
-    @IsNotEmpty()
+    @IsOptional()
     page: number;
  
     @IsNumber()
-    @IsNotEmpty()
+   @IsOptional()
     limit: number;
 }

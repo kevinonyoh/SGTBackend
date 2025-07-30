@@ -93,58 +93,22 @@ export class CoursesService {
 
   async findCourse(id: string){
     
-    const includeOption = {
-      include: [
-        {
-          model: QuizModel
-        },
-        {
-          model: ChapterModel
-        }
-      ]
-    }
-
-    return await this.courseRepository.findOne({id},  <unknown>includeOption);
+    return await this.courseRepository.findOne({id});
 
   }
 
-  async findAllCourse( data: GetCourseDto){
+  async findAllCourse( data: GetCourseByTypeDto){
 
     const {page, limit } = data;
 
     const includeOption = {
-      include: [
-        {
-          model: QuizModel
-        },
-        {
-          model: ChapterModel
-        }
-      ],
-
       order: [['createdAt', 'DESC']]
-
     }
 
     return await this.courseRepository.findAllPaginated({}, <unknown>includeOption, {page, limit});
 
   }
 
-
-  async findByType(type: string, data: GetCourseDto){
-      
-    const {page, limit} = data;
-
-    const includeOption = {
-
-      order: [['createdAt', 'DESC']]
-
-    }
-
-    return await this.courseRepository.findAllPaginated({courseType: type}, <unknown>includeOption, {page, limit});
-
-
-  }
 
 
   async deleteCourse(id: string, transaction: Transaction){

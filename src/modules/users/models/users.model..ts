@@ -1,5 +1,6 @@
-import { AllowNull, Column, DataType, Default, Model, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { AllowNull, Column, DataType, Default, HasMany, Model, PrimaryKey, Table, Unique } from "sequelize-typescript";
 import { ICoursesInterest } from "../interfaces/users.interface";
+import { PaymentModel } from "src/modules/payment/model/payment.model";
 
 @Table({
     tableName: "users",
@@ -39,5 +40,7 @@ export class UsersModel extends Model<UsersModel> {
     @Column(DataType.BOOLEAN)
     isEmailVerified: boolean;
 
+    @HasMany(() => PaymentModel)
+    payments: PaymentModel[];
 
 }
