@@ -28,7 +28,6 @@ export class CreateCourseDto {
     @IsDate()
     @IsNotEmpty()
     date: Date;
-
 }
 
 export class CreateChapterDto{

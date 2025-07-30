@@ -46,6 +46,10 @@ export class CoursesModel extends Model<CoursesModel>{
     @Column(DataType.DATE)
     date: Date;
 
+    @AllowNull(true)
+    @Column
+    explanatoryVideoUrl: string;
+
     @HasMany(() => ChapterModel)
     Chapters: ChapterModel[];
     

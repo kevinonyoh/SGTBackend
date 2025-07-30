@@ -74,9 +74,7 @@ export class PaymentController {
   @HttpCode(200)
   @ResponseMessage("courses data")
   async getUserCourses(@User() user: IUser,  @Query() query: GetPageDto){
-
     return await this.paymentService.getUserCourses(user, query);
-
   }
 
 

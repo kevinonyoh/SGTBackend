@@ -180,7 +180,6 @@ export class UsersService {
           include: [
             {
               model: CoursesModel,
-              attributes: ['id', 'title'],
               required: false
             }
           ]

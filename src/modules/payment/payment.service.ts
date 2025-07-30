@@ -191,7 +191,6 @@ export class PaymentService {
     }
 
     return await this.paymentRepository.findAllPaginated({userId: user.id, status: IStatus.successful}, <unknown>includeOption, {page, limit});
-
   }
 
   async getCourse(user: IUser, courseId: string){
@@ -272,6 +271,7 @@ export class PaymentService {
 
   }
   
+
 
 }
 
