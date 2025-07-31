@@ -40,6 +40,7 @@ export class AuthService {
 
     if (!user.isEmailVerified) throw new ForbiddenException('Account deactivated, ensure to verify you account before login');
 
+    if (!user.activated) throw new ForbiddenException("your account have been deactivated");
 
     const secret = this.configService.get<string>('secretKey');
 
@@ -69,8 +70,9 @@ export class AuthService {
 
     if (!comparePassword) throw new UnauthorizedException('Password is incorrect');
 
-    if (!user.isEmailVerified) throw new ForbiddenException('Account deactivated, ensure to verify you account before login');
+    if (!user.isEmailVerified) throw new ForbiddenException('email not yet verified, ensure to verify you account before login');
 
+    if (!user.activated) throw new ForbiddenException("your account have been deactivated");
 
     const secret = this.configService.get<string>('secretKey');
 
@@ -99,7 +101,7 @@ export class AuthService {
 
     if(!user) user = await this.usersService.createGoogleAccount(data, transaction);
 
-    if (!user.isEmailVerified) throw new ForbiddenException('Account deactivated');
+    if (!user.activated) throw new ForbiddenException("your account have been deactivated");
 
      const secret = this.configService.get<string>('secretKey');
 

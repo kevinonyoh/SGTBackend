@@ -192,6 +192,28 @@ export class UsersService {
     return await this.usersRepository.findAllPaginated({}, <unknown>includeOption, {page, limit});
 
    }
+
+   async deactivate( id: string, transaction: Transaction) {
+    const user = await this.usersRepository.findOne({ id, isEmailVerified: true });
+
+    if (!user) throw new BadRequestException('User not found or email not verified');
+
+    const result = await this.usersRepository.update({ id }, { activated: false }, transaction);
+
+  }
+
+  async activate(id: string, transaction: Transaction) {
+    const user = await this.usersRepository.findOne({ id, isEmailVerified: true });
+
+    if (!user) throw new BadRequestException('User not found or email not verified');
+
+    const result = await this.usersRepository.update({ id }, { activated: true }, transaction);
+  }
+
+  async deleteUser(id: string, transaction: Transaction){
+    await this.usersRepository.delete({id}, transaction);
+  }
+
 }
 
 

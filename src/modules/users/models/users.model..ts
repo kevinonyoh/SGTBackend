@@ -32,6 +32,11 @@ export class UsersModel extends Model<UsersModel> {
     @Column(DataType.ARRAY(DataType.ENUM(ICoursesInterest.ATS, ICoursesInterest.ICAN, ICoursesInterest.Olevel, ICoursesInterest.All_Courses)))
     coursesInterest: ICoursesInterest[];
 
+    @AllowNull(false)
+    @Default(true)
+    @Column(DataType.BOOLEAN)
+    activated: boolean;
+
     @AllowNull(true)
     @Column
     password: string;

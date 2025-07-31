@@ -7,7 +7,7 @@ export class CreateAdminDto {
 
     @IsString()
     @IsNotEmpty()
-    name: string;
+    fullName: string;
  
     @IsString()
     @IsNotEmpty()
@@ -22,6 +22,10 @@ export class CreateAdminDto {
     @IsEnum(IRole, { each: true })
     @Type(() => String)
     role: IRole[];
+
+}
+
+export class UpdateAdminDto{
 
 }
 

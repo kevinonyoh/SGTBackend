@@ -35,6 +35,11 @@ export class AdminModel extends Model<AdminModel> {
     @Column
     password: string;
 
+    @AllowNull(false)
+    @Default(true)
+    @Column(DataType.BOOLEAN)
+    activated: boolean;
+
     @AllowNull
     @Default(true)
     @Column(DataType.BOOLEAN)

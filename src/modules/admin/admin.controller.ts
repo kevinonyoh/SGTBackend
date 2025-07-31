@@ -58,4 +58,39 @@ export class AdminController {
     return await this.adminService.findAllAdmin(body);
   }
 
+  @Role(IRole.SUPER_ADMIN)
+  @Put("admins/deactivate/:userId")
+  @ResponseMessage("admin deactivated successfully")
+  async deactivateAdmin(@Admin() admin: IAdmin, @Param('userId') id: string, @TransactionParam() transaction: Transaction){
+    return await this.adminService.deactivate(admin, id, transaction);
+  }
+
+  @Role(IRole.SUPER_ADMIN)
+  @Put("admins/activate/:userId")
+  @ResponseMessage("admin reactivated successfully")
+  async activateAdmin(@Admin() admin: IAdmin, @Param('userId') id: string, @TransactionParam() transaction: Transaction){
+    return await this.adminService.activate(admin, id, transaction);
+  }
+
+  @Role(IRole.SUPER_ADMIN)
+  @Put("users/deactivate/:userId")
+  @ResponseMessage("user deactivated successfully")
+  async deactivateUser(@Param('userId') id: string, @TransactionParam() transaction: Transaction){
+    return await this.userService.deactivate(id, transaction);
+  }
+
+  @Role(IRole.SUPER_ADMIN)
+  @Put("users/activate/:userId")
+  @ResponseMessage("user reactivated successfully")
+  async activateUser(@Param('userId') id: string, @TransactionParam() transaction: Transaction){
+    return await this.userService.activate(id, transaction);
+  }
+
+  @Role(IRole.SUPER_ADMIN)
+  @Delete("users/remove/:userId")
+  @HttpCode(204)
+  @ResponseMessage("user deleted successfully")
+  async removeUser(@Param('userId') id: string, @TransactionParam() transaction: Transaction){
+    return await this.userService.deleteUser(id, transaction);
+  }
 }

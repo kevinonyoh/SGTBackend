@@ -2,11 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { AdminResetPasswordDto, CreateAdminDto, PageLimitDto, RemoveAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { AdminRepository } from './repositories/admin.repository';
-import { Transaction } from 'sequelize';
+import { Op, Sequelize, Transaction } from 'sequelize';
 import * as helpers from 'src/common/utils/helper';
 import * as bcrypt from "bcrypt";
 import { EmailService } from 'src/shared/notification/email/email.service';
-import { IAdmin } from './interfaces/admin.interface';
+import { IAdmin, IRole } from './interfaces/admin.interface';
 
 @Injectable()
 export class AdminService {
@@ -91,5 +91,31 @@ export class AdminService {
        return await this.adminRepository.findAllPaginated({}, <unknown>includeOption, {page, limit});
   }
 
+  async deactivate(admin: IAdmin, id: string, transaction: Transaction) {
+   
+    
+    const user = await this.adminRepository.findOne({ id, isEmailVerified: true });
+
+    const {role} = user.toJSON();
+
+    if(role.includes(IRole.SUPER_ADMIN)) throw new BadRequestException("You do not have permission to deactivate this admin"); 
+
+    if (!user) throw new BadRequestException('User not found or email not verified');
+
+    await this.adminRepository.update({ id }, { activated: false }, transaction);
+  }
+
+  async activate(admin: IAdmin, id: string, transaction: Transaction) {
+    const user = await this.adminRepository.findOne({ id, isEmailVerified: true });
+
+    if (!user) throw new BadRequestException('User not found or email not verified');
+
+    await this.adminRepository.update({ id }, { activated: true }, transaction);
+
+  }
+
+  async updateProfile(){
+
+  }
 
 }
