@@ -47,6 +47,10 @@ export class CoursesModel extends Model<CoursesModel>{
     @Column
     explanatoryVideoUrl: string;
 
+    @AllowNull(true)
+    @Column
+    description: string;
+
     @HasMany(() => ChapterModel, { as: 'chapters', foreignKey: 'courseId' })
     chapters: ChapterModel[];
 

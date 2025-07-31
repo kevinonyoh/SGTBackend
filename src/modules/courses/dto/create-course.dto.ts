@@ -10,6 +10,10 @@ export class CreateCourseDto {
     title: string;
 
     @IsString()
+    @IsOptional()
+    description: string;
+
+    @IsString()
     @IsNotEmpty()
     imageUrl: string;
 
