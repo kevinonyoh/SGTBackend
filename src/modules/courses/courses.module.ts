@@ -12,11 +12,13 @@ import { QuizAttemptRepository } from './repositories/QuizAttempt.repository';
 import { QuizRepository } from './repositories/quiz.repository';
 import { QuestionRepository } from './repositories/question.repository';
 import { PaymentRepository } from '../payment/repositories/payment.repository';
+import { CourseRatingModel } from './models/course-rating.model';
+import { CourseRatingRepository } from './repositories/course-rating.repository';
 
 @Module({
-  imports: [SequelizeModule.forFeature([CoursesModel, ChapterModel, QuizModel, QuestionModel, QuizAttemptModel])],
+  imports: [SequelizeModule.forFeature([CoursesModel, ChapterModel, QuizModel, QuestionModel, QuizAttemptModel, CourseRatingModel])],
   controllers: [CoursesController],
-  providers: [CoursesService, CoursesRepository, ChapterRepository, QuizAttemptRepository, QuizRepository, QuestionRepository, PaymentRepository],
+  providers: [CoursesService, CoursesRepository, ChapterRepository, QuizAttemptRepository, QuizRepository, QuestionRepository, PaymentRepository, CourseRatingRepository],
   exports: [CoursesService]
 })
 export class CoursesModule {}

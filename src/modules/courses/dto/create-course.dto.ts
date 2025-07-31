@@ -1,4 +1,4 @@
-import { ArrayMinSize, IsArray, IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min, ValidateIf, ValidateNested } from "class-validator";
+import { ArrayMinSize, IsArray, IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Max, Min, ValidateIf, ValidateNested } from "class-validator";
 import { ICoursesInterest } from "src/modules/users/interfaces/users.interface";
 import { ICoursesLevel, IDiet, IQuestionType, IQuizType } from "../interfaces/courses.interface";
 import { Type } from "class-transformer";
@@ -222,11 +222,28 @@ export class GetCourseByTypeDto{
 
     @IsEnum(ICoursesInterest)
     @IsOptional()
-    type: ICoursesInterest;
+    courseType: ICoursesInterest;
 
 
 }
 
+export class GetUserPageCourses{
+    @IsNumber()
+    @IsOptional()
+    page: number;
+
+    @IsNumber()
+    @IsOptional()
+    limit: number;
+
+    @IsEnum(ICoursesInterest)
+    @IsOptional()
+    courseType: ICoursesInterest;
+
+    @IsUUID()
+    @IsOptional()
+    id: string;
+}
 
 
 export class QuizAttemptDto{

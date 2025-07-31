@@ -3,6 +3,7 @@ import { ICoursesInterest } from "src/modules/users/interfaces/users.interface";
 import { ICoursesLevel } from "../interfaces/courses.interface";
 import { ChapterModel } from "./chapter.model";
 import { QuizModel } from "./quiz.model";
+import { CourseRatingModel } from "./course-rating.model";
 
 
 @Table({
@@ -30,10 +31,6 @@ export class CoursesModel extends Model<CoursesModel>{
     @Column(DataType.DECIMAL(10, 2))
     price: number;
 
-    @AllowNull(true)
-    @Column(DataType.INTEGER)
-    rating: number;
-
     @AllowNull(false)
     @Column(DataType.ENUM(ICoursesInterest.ATS, ICoursesInterest.ICAN, ICoursesInterest.Olevel))
     courseType: ICoursesInterest;
@@ -50,11 +47,14 @@ export class CoursesModel extends Model<CoursesModel>{
     @Column
     explanatoryVideoUrl: string;
 
-    @HasMany(() => ChapterModel)
-    Chapters: ChapterModel[];
-    
-    @HasMany(() => QuizModel)
-    quizzies: QuizModel[];
+    @HasMany(() => ChapterModel, { as: 'chapters', foreignKey: 'courseId' })
+    chapters: ChapterModel[];
+
+    @HasMany(() => QuizModel, { as: 'quizzes', foreignKey: 'courseId' })
+    quizzes: QuizModel[];
+
+    @HasMany(() => CourseRatingModel)
+    ratings: CourseRatingModel[];
 
 }
 

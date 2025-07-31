@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuestionDto, GetQuizByTypeDto, QuizAttemptDto, RatingDto, UpdateCourseDto, UpdateQuestionDto } from './dto/create-course.dto';
+import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuestionDto, GetQuizByTypeDto, GetUserPageCourses, QuizAttemptDto, RatingDto, UpdateCourseDto, UpdateQuestionDto } from './dto/create-course.dto';
 import { CoursesRepository } from './repositories/course.repository';
 import { ChapterRepository } from './repositories/chapter.repository';
 import { QuestionRepository } from './repositories/question.repository';
@@ -13,6 +13,8 @@ import { IQuestionType, IQuizType } from './interfaces/courses.interface';
 import { CoursesModel } from './models/course.model';
 import { QuestionModel } from './models/question.model';
 import { PaymentRepository } from '../payment/repositories/payment.repository';
+import { CourseRatingRepository } from './repositories/course-rating.repository';
+import { CourseRatingModel } from './models/course-rating.model';
 
 @Injectable()
 export class CoursesService {
@@ -23,6 +25,7 @@ export class CoursesService {
     private readonly quizRepository: QuizRepository,
     private readonly quizAttemptRepository:QuizAttemptRepository,
     private readonly paymentRepository: PaymentRepository,
+    private readonly courseRatingRepository: CourseRatingRepository
   ){}
 
   async createCourse(data: CreateCourseDto, transaction: Transaction){
@@ -96,42 +99,165 @@ export class CoursesService {
   async findCourse(id: string){
     
     const includeOption = {
+      attributes: {
+        include: [
+          
+          [
+            Sequelize.literal(`(
+            SELECT COUNT(*)
+            FROM "courses_chapters"
+            WHERE "courses_chapters"."course_id" = "CoursesModel"."id"
+          )`),
+          'totalChapters'
+        ],
+
+          [
+            Sequelize.literal(`(
+              SELECT json_build_object(
+                'rating', ROUND(AVG(r.rating)::numeric, 1),
+                'total', COUNT(r.id)
+              )
+              FROM "course_ratings" r
+              WHERE r."courseId" = "CoursesModel"."id"
+            )`),
+            'ratingStats'
+          ]
+        ]
+      },
       include: [
-        {
-          model: ChapterModel
-        },
-        {
-          model: QuizModel
-        }
+          { 
+            model: ChapterModel
+          },
+          {
+             model: QuizModel
+          }
       ],
-
-      order: [['createdAt', 'DESC']]
-
+      order: [['createdAt', 'DESC']],
     }
+
     return await this.courseRepository.findOne({id}, <unknown>includeOption);
 
   }
 
   async findAllCourse( data: GetCourseByTypeDto){
 
-    const {page, limit } = data;
+    const {page, limit, ...rest} = data;
 
     const includeOption = {
+      attributes: {
+        include: [
+          
+          [
+            Sequelize.literal(`(
+            SELECT COUNT(*)
+            FROM "courses_chapters"
+            WHERE "courses_chapters"."course_id" = "CoursesModel"."id"
+          )`),
+          'totalChapters'
+        ],
+
+          [
+            Sequelize.literal(`(
+              SELECT json_build_object(
+                'rating', ROUND(AVG(r.rating)::numeric, 1),
+                'total', COUNT(r.id)
+              )
+              FROM "course_ratings" r
+              WHERE r."courseId" = "CoursesModel"."id"
+            )`),
+            'ratingStats'
+          ]
+        ]
+      },
       include: [
-        {
-          model: ChapterModel
-        },
-        {
-          model: QuizModel
-        }
+          { 
+            model: ChapterModel
+          },
+          {
+             model: QuizModel
+          }
       ],
-      order: [['createdAt', 'DESC']]
+      order: [['createdAt', 'DESC']],
     }
 
-    return await this.courseRepository.findAllPaginated({}, <unknown>includeOption, {page, limit});
+    return await this.courseRepository.findAllPaginated({ ...rest }, <unknown>includeOption, {page, limit});
 
   }
 
+  async getUsersCourseById(id: string){
+    
+    const includeOption = {
+      attributes: {
+        include: [
+          
+          [
+            Sequelize.literal(`(
+            SELECT COUNT(*)
+            FROM "courses_chapters"
+            WHERE "courses_chapters"."course_id" = "CoursesModel"."id"
+          )`),
+          'totalChapters'
+        ],
+
+          [
+            Sequelize.literal(`(
+              SELECT json_build_object(
+                'rating', ROUND(AVG(r.rating)::numeric, 1),
+                'total', COUNT(r.id)
+              )
+              FROM "course_ratings" r
+              WHERE r."courseId" = "CoursesModel"."id"
+            )`),
+            'ratingStats'
+          ]
+        ]
+      },
+      
+      order: [['createdAt', 'DESC']],
+    }
+
+    return await this.courseRepository.findOne({id}, <unknown>includeOption);
+
+  }
+
+  async getUserPageCourses(data: GetUserPageCourses){
+
+    const {page, limit, ...rest} = data;
+
+    const includeOption = {
+      attributes: {
+        include: [
+          
+          [
+            Sequelize.literal(`(
+            SELECT COUNT(*)
+            FROM "courses_chapters"
+            WHERE "courses_chapters"."course_id" = "CoursesModel"."id"
+          )`),
+          'totalChapters'
+        ],
+
+          [
+            Sequelize.literal(`(
+              SELECT json_build_object(
+                'rating', ROUND(AVG(r.rating)::numeric, 1),
+                'total', COUNT(r.id)
+              )
+              FROM "course_ratings" r
+              WHERE r."courseId" = "CoursesModel"."id"
+            )`),
+            'ratingStats'
+          ]
+        ]
+      },
+
+      order: [['createdAt', 'DESC']],
+    }
+
+    return await this.courseRepository.findAllPaginated({ ...rest }, <unknown>includeOption, {page, limit});
+
+
+  }
 
 
   async deleteCourse(id: string, transaction: Transaction){
@@ -141,7 +267,23 @@ export class CoursesService {
   }
 
 
+ async courseRating(user: IUser, courseId: string, data: RatingDto, transaction: Transaction){
+  
+    const payment = await this.paymentRepository.findOne({userId: user.id, courseId});
 
+    if(!payment) throw new BadRequestException("user have not buy the course yet");
+
+    const courseRating = await this.courseRatingRepository.findOne({userId: user.id, courseId});
+
+    if(!courseRating) throw new BadRequestException("User have already rate this course");
+    
+    const course = await this.courseRepository.findOne({id: courseId});
+
+    if(!course) throw new BadRequestException("Course does not exist");
+
+    await this.courseRatingRepository.create({userId: user.id, courseId, ...data}, transaction);
+
+ }
 
 
   async userAttemptQuiz(user: IUser, data: QuizAttemptDto, transaction: Transaction){
@@ -201,16 +343,6 @@ export class CoursesService {
 
   }
 
-
-  async rateCourse(id: string, user:IUser, data:RatingDto, transaction: Transaction){
-    
-    const userData = await this.paymentRepository.findOne({userId: user.id, id});
-
-    if(!userData) throw new BadRequestException("you haven't buy the course yet");
-
-    return await this.courseRepository.update({id}, {...data}, transaction);
-
-  }
 
   async findChapters(courseId: string){
     const includeOption = {

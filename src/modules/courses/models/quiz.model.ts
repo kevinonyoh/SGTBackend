@@ -63,8 +63,6 @@ export class QuizModel extends Model<QuizModel>{
     @HasMany(() => QuestionModel)
     questions: QuestionModel[];
 
-
-
 }
 
 
