@@ -42,6 +42,10 @@ export class QuestionModel extends Model<QuestionModel>{
     @Column
     publicId: string;
 
+    @AllowNull(true)
+    @Column
+    explanatoryVideoUrl: string;
+
     @AllowNull(false)
     @Column(DataType.JSONB)
     answerOptions: IQuestion[];

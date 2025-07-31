@@ -138,6 +138,9 @@ export class CreateQuestionDto{
     @IsOptional()
     publicId: string;
 
+    @IsString()
+    @IsOptional()
+    explanatoryVideoUrl: string;
 
     @IsArray()
     @ValidateNested({ each: true })
@@ -164,6 +167,10 @@ export class UpdateQuestionDto{
     @IsString()
     @IsOptional()
     publicId: string;
+
+    @IsString()
+    @IsOptional()
+    explanatoryVideoUrl: string;
 
     @IsArray()
     @IsOptional()
