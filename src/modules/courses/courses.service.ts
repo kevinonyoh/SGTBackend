@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuestionDto, GetQuizByTypeDto, GetUserPageCourses, QuizAttemptDto, RatingDto, UpdateCourseDto, UpdateQuestionDto } from './dto/create-course.dto';
+import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuestionDto, GetQuizByTypeDto, GetUserPageCourses, QuizAttemptDto, RatingDto, UpdateChapterDto, UpdateCourseDto, UpdateQuestionDto, updateQuizDto } from './dto/create-course.dto';
 import { CoursesRepository } from './repositories/course.repository';
 import { ChapterRepository } from './repositories/chapter.repository';
 import { QuestionRepository } from './repositories/question.repository';
@@ -391,6 +391,26 @@ export class CoursesService {
     
     return await this.questionRepository.update({quizId, id}, {...data}, transaction);
 
+  }
+
+  async deleteQuestion(quizId:string, id: string, transaction: Transaction){
+      await this.questionRepository.delete({id, quizId}, transaction);
+  }
+
+  async deleteQuiz(courseId:string, id:string, transaction: Transaction){
+     await this.quizRepository.delete({courseId, id}, transaction);
+  }
+
+  async deleteChapter(courseId:string, id:string, transaction: Transaction){
+     await this.chapterRepository.delete({courseId, id}, transaction);
+  }
+
+  async updateQuiz(courseId:string, id:string, data: updateQuizDto, transaction: Transaction){
+     return await this.quizRepository.update({courseId, id}, {...data}, transaction);
+  }
+
+  async updateChapter(courseId:string, id:string, data: UpdateChapterDto, transaction: Transaction){
+     return await this.chapterRepository.update({courseId, id}, {...data}, transaction);
   }
 
 

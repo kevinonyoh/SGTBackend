@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put,  Query } from '@nestjs/common';
 import { CoursesService } from './courses.service';
-import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuizByTypeDto, GetUserPageCourses, QuizAttemptDto, RatingDto, UpdateCourseDto, UpdateQuestionDto } from './dto/create-course.dto';
+import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuizByTypeDto, GetUserPageCourses, QuizAttemptDto, RatingDto, UpdateChapterDto, UpdateCourseDto, UpdateQuestionDto, updateQuizDto } from './dto/create-course.dto';
 import { Role } from 'src/common/decorators/role.decorator';
 import { IRole } from '../admin/interfaces/admin.interface';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
@@ -26,7 +26,7 @@ export class CoursesController {
   }
 
   @Role(IRole.SUPER_ADMIN)
-  @Put("create/chapter/:courseId")
+  @Post("create/chapter/:courseId")
   @HttpCode(200)
   @ResponseMessage("chapter successfully added")
   async addChapter(@Param("courseId") courseId: string, @Body() body: CreateChapterDto, @TransactionParam() transaction: Transaction){
@@ -34,7 +34,7 @@ export class CoursesController {
   }
 
   @Role(IRole.SUPER_ADMIN)
-  @Put("create/quiz/:courseId")
+  @Post("create/quiz/:courseId")
   @HttpCode(200)
   @ResponseMessage("quiz successfully added")
   async addQuiz(@Param("courseId") courseId: string, @Body() body: CreateQuizDto, @TransactionParam() transaction: Transaction){
@@ -42,7 +42,7 @@ export class CoursesController {
   }
 
   @Role(IRole.SUPER_ADMIN, IRole.MANAGE_COURSES)
-  @Put("create/quiz/question/:quizId")
+  @Post("create/quiz/question/:quizId")
   @HttpCode(200)
   @ResponseMessage("question successfully added")
   async addQuestion(@Param("quizId") quizId: string, @Body() body: CreateQuestionDto[], @TransactionParam() transaction: Transaction){
@@ -144,4 +144,38 @@ export class CoursesController {
     return await this.coursesService.updateQuestion(quizId, questionId, body, transaction);
   }
 
+  @Role(IRole.SUPER_ADMIN, IRole.MANAGE_COURSES)
+  @Delete("questions/:quizId/:questionId")
+  @ResponseMessage("Question Remove successfully")
+  async removeQuestion(@Param("quizId") quizId: string, @Param("questionId") id: string,  @TransactionParam() transaction: Transaction){
+     return await this.coursesService.deleteQuestion(quizId, id, transaction);
+  }
+
+  @Role(IRole.SUPER_ADMIN)
+  @Delete("quiz/:courseId/:quizId")
+  @ResponseMessage("quiz Remove successfully")
+  async removeQuiz(@Param("courseId") courseId: string, @Param("quizId") id: string,  @TransactionParam() transaction: Transaction){
+     return await this.coursesService.deleteQuiz(courseId, id, transaction);
+  }
+
+  @Role(IRole.SUPER_ADMIN)
+  @Delete("chapters/:courseId/:chapterId")
+  @ResponseMessage("chapter Remove successfully")
+  async removeChapter(@Param("courseId") courseId: string, @Param("chapterId") id: string,  @TransactionParam() transaction: Transaction){
+     return await this.coursesService.deleteChapter(courseId, id, transaction);
+  }
+
+  @Role(IRole.SUPER_ADMIN, IRole.MANAGE_COURSES)
+  @Put("quiz/:courseId/:quizId")
+  @ResponseMessage("quiz updated successfully") 
+  async UpdateQuiz(@Param("courseId") courseId: string, @Param("quizId") id: string, @Body() body: updateQuizDto, @TransactionParam() transaction: Transaction){
+    return await this.coursesService.updateQuiz(courseId, id, body, transaction);
+  }
+
+  @Role(IRole.SUPER_ADMIN)
+  @Put("chapters/:courseId/:chapterId")
+  @ResponseMessage("chapter updated successfully") 
+  async UpdateChapter(@Param("courseId") courseId: string, @Param("chapterId") id: string, @Body() body: UpdateChapterDto, @TransactionParam() transaction: Transaction){
+    return await this.coursesService.updateChapter(courseId, id, body, transaction);
+  }
 }

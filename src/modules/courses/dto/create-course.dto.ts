@@ -70,6 +70,41 @@ export class CreateChapterDto{
 
 }
 
+export class UpdateChapterDto{
+    @IsString()
+    @IsOptional()
+    chapterTitle: string
+
+    @IsString()
+    @IsOptional()
+    description: string;
+    
+    @IsString()
+    @IsOptional()
+    publicId: string;
+
+    @IsString()
+    @IsOptional()
+    url: string;
+
+    @IsString()
+    @IsOptional()
+    format: string;
+
+    @IsString()
+    @IsOptional()
+    resourceType: string;
+
+    @IsNumber()
+    @IsOptional()
+    duration: number;
+
+    @IsString()
+    @IsOptional()
+    additionalResources: string;
+
+}
+
 
 
 export class CreateQuizDto{
@@ -92,6 +127,41 @@ export class CreateQuizDto{
 
     @IsEnum(IQuestionType)
     @IsNotEmpty()
+    questionType: IQuestionType;
+
+    @IsString()
+    @IsOptional()
+    chapterId: string;
+
+    @IsEnum(IDiet)
+    @IsOptional()
+    diet: IDiet;
+
+    @IsNumber()
+    @IsOptional()
+    default: number;
+
+}
+
+export class updateQuizDto{
+    @IsString()
+    @IsOptional()
+    title: string;
+
+    @IsString()
+    @IsOptional()
+    instruction: string;
+
+    @IsEnum(IQuizType)
+    @IsOptional()
+    type: IQuizType;
+
+    @IsNumber()
+    @IsOptional()
+    year: number;
+
+    @IsEnum(IQuestionType)
+    @IsOptional()
     questionType: IQuestionType;
 
     @IsString()

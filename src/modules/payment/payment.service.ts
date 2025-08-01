@@ -13,6 +13,9 @@ import { PaymentRepository } from './repositories/payment.repository';
 import { UsersModel } from '../users/models/users.model.';
 import { CoursesModel } from '../courses/models/course.model';
 import { calculateMinutesAgo } from 'src/common/utils/helper';
+import { QuizModel } from '../courses/models/quiz.model';
+import { QuestionModel } from '../courses/models/question.model';
+import { ChapterModel } from '../courses/models/chapter.model';
 
 
 
