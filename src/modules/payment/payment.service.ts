@@ -162,7 +162,23 @@ export class PaymentService {
       const includeOption = {
         include: [
           {
-            model: CoursesModel
+            model: CoursesModel,
+            as: "course",
+            attributes: {
+              include: [
+                [
+                  Sequelize.literal(`(
+                    SELECT json_build_object(
+                      'rating', ROUND(AVG(r.rating)::numeric, 1),
+                      'total', COUNT(r.id)
+                    )
+                    FROM "course_ratings" r
+                    WHERE r."courseId" = "course"."id"
+                  )`),
+                  "ratingStats"
+                ]
+              ]
+            }
           }
         ],
 
@@ -185,8 +201,37 @@ export class PaymentService {
           model: UsersModel
         },
         {
-          model: CoursesModel
-        }
+          model: CoursesModel,
+          attributes: {
+            include: [
+              [
+                Sequelize.literal(`(
+                  SELECT json_build_object(
+                    'rating', ROUND(AVG(r.rating)::numeric, 1),
+                    'total', COUNT(r.id)
+                  )
+                  FROM "course_ratings" r
+                  WHERE r."courseId" = "course"."id"
+                )`),
+                "ratingStats"
+              ]
+            ]
+          },
+          include: [
+           
+            {
+              model: ChapterModel
+            },
+            {
+              model: QuizModel,
+              include: [
+                {
+                  model: QuestionModel,
+                },
+              ],
+            },
+          ],
+        },
       ],
 
       order: [['createdAt', 'DESC']]
@@ -201,8 +246,40 @@ export class PaymentService {
     const includeOption = {
       include: [
         {
-          model: CoursesModel
-        }
+          model: UsersModel
+        },
+        {
+          model: CoursesModel,
+          attributes: {
+            include: [
+              [
+                Sequelize.literal(`(
+                  SELECT json_build_object(
+                    'rating', ROUND(AVG(r.rating)::numeric, 1),
+                    'total', COUNT(r.id)
+                  )
+                  FROM "course_ratings" r
+                  WHERE r."courseId" = "course"."id"
+                )`),
+                "ratingStats"
+              ]
+            ]
+          },
+          include: [
+           
+            {
+              model: ChapterModel
+            },
+            {
+              model: QuizModel,
+              include: [
+                {
+                  model: QuestionModel,
+                },
+              ],
+            },
+          ],
+        },
       ],
 
       order: [['createdAt', 'DESC']]
@@ -226,7 +303,21 @@ export class PaymentService {
       include: [
         {
           model: CoursesModel,
-          attributes: ['id', 'title', 'price']
+          attributes: {
+            include: [
+              [
+                Sequelize.literal(`(
+                  SELECT json_build_object(
+                    'rating', ROUND(AVG(r.rating)::numeric, 1),
+                    'total', COUNT(r.id)
+                  )
+                  FROM "course_ratings" r
+                  WHERE r."courseId" = "course"."id"
+                )`),
+                "ratingStats"
+              ]
+            ]
+          }
         }
       ],
       group: ['courseId', 'course.id'], 
