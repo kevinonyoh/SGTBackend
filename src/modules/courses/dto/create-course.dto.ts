@@ -353,7 +353,7 @@ export class QuizAttemptDto{
 
 class UserAnswersDto{
     
-    @ValidateIf(() => true)
+    @IsOptional()
     answer: any;
 
     @IsString()

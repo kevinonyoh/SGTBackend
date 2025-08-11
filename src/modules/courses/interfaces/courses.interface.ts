@@ -1,3 +1,4 @@
+import { AnyARecord } from "dns";
 
 export enum ICoursesLevel{
     Beginner = "Beginner",
@@ -25,7 +26,7 @@ export interface IQuestion{
 
 export interface IUserAnswers{
     questionId: string;
-    answer: string;
+    answer: any;
 }
 
 

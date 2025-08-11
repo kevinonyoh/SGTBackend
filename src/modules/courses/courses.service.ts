@@ -286,62 +286,56 @@ export class CoursesService {
  }
 
 
-  async userAttemptQuiz(user: IUser, data: QuizAttemptDto, transaction: Transaction){
-    
-     const payload = {
-        userId: user.id,
-        ...data
-     }
+ async userAttemptQuiz(user: IUser, data: QuizAttemptDto, transaction: Transaction) {
+  const { quizId, attemptNumber, score, userAnswers } = data;
+
+  const filteredAnswers = userAnswers.map(ans => ({
+    questionId: ans.questionId,
+    answer: ans.answer
+  }));
+
+  const payload = {
+    userId: user.id,
+    quizId,
+    attemptNumber,
+    score,
+    userAnswers: filteredAnswers
+  };
+
+  await this.quizAttemptRepository.create(payload, transaction);
+}
 
 
-     await this.quizAttemptRepository.create(payload, transaction);
 
+async reviewQuiz(user: IUser, quizId: string) {
+  const userAttempt = await this.quizAttemptRepository.findOne({ userId: user.id, quizId });
 
+  if (!userAttempt) {
+    throw new BadRequestException("User has not attempted this quiz yet");
   }
 
+  const { userAnswers } = userAttempt.toJSON();
 
+  const questionIds = userAnswers.map(a => a.questionId);
 
-  async reviewQuiz(user: IUser, quizId: string){
+  const questions = await this.questionRepository.findAll( { id: { [Op.in]: questionIds } });
 
-    
-    const userAttempt = await this.quizAttemptRepository.findOne({userId: user.id, quizId});
-
-    if(!userAttempt) throw new BadRequestException("user have not attempt quiz yet");
-
-    const userAttemptJson = userAttempt.toJSON();
-
-    const questionIds = userAttemptJson.userAnswers.map(answer => String(answer.questionId));
-
-    console.log(questionIds);
-
-    const questions = await this.questionRepository.findAll({
-      where: { id: { [Op.in]: questionIds } }
-    });
   
-    return questions;
-  
-    // const questionWithAnswer = questions.map(question => {
+  const questionWithAnswer = questions.map(question => {
+    const userAnswer = userAnswers.find(a => a.questionId === question.id);
+    return {
+      ...question.toJSON(),
+      userAnswer: userAnswer?.answer || null
+    };
+  });
 
-    //   console.log(question);
-      
-    //   const userAnswer = userAttemptJson.userAnswers.find(answer => answer.questionId === question.id);
+  return {
+    score: userAttempt.score,
+    attemptNumber: userAttempt.attemptNumber,
+    questions: questionWithAnswer
+  };
+}
 
-    //   return {
-    //     ...question.toJSON(),
-    //     userAnswer: userAnswer?.answer || null
-    //   };
-
-    // });
-
-    // const {score, attemptNumber} = userAttemptJson;
-
-    // return {
-    //   score,
-    //   attemptNumber,
-    //   questionWithAnswer
-    // }
-
-  }
 
 
   async findChapters(courseId: string){
