@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put,  Query } from '@nestjs/common';
 import { CoursesService } from './courses.service';
-import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuizByTypeDto, GetUserPageCourses, QuizAttemptDto, RatingDto, UpdateChapterDto, UpdateCourseDto, UpdateQuestionDto, updateQuizDto } from './dto/create-course.dto';
+import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuizByTypeDto, GetUserPageCourses, QuizAttemptDto, RatingDto, RecommendedCourseDto, UpdateChapterDto, UpdateCourseDto, UpdateQuestionDto, updateQuizDto } from './dto/create-course.dto';
 import { Role } from 'src/common/decorators/role.decorator';
 import { IRole } from '../admin/interfaces/admin.interface';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
@@ -178,4 +178,12 @@ export class CoursesController {
   async UpdateChapter(@Param("courseId") courseId: string, @Param("chapterId") id: string, @Body() body: UpdateChapterDto, @TransactionParam() transaction: Transaction){
     return await this.coursesService.updateChapter(courseId, id, body, transaction);
   }
+
+  @Public()
+  @Get("recommend-courses")
+  @ResponseMessage("Recommended courses")
+  async RecommendCourses(@Query() query: RecommendedCourseDto){
+    return await this.coursesService.recommendedCourse(query);
+  }
+
 }

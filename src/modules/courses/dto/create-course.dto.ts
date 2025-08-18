@@ -392,3 +392,15 @@ export class GetQuizByTypeDto{
     @IsNotEmpty()
     questionType: IQuestionType;
 }
+
+export class RecommendedCourseDto{
+
+    @IsNumber()
+    @IsOptional()
+    page: number;
+
+    @IsNumber()
+    @IsOptional()
+    limit: number;
+
+}

@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuestionDto, GetQuizByTypeDto, GetUserPageCourses, QuizAttemptDto, RatingDto, UpdateChapterDto, UpdateCourseDto, UpdateQuestionDto, updateQuizDto } from './dto/create-course.dto';
+import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuestionDto, GetQuizByTypeDto, GetUserPageCourses, QuizAttemptDto, RatingDto, RecommendedCourseDto, UpdateChapterDto, UpdateCourseDto, UpdateQuestionDto, updateQuizDto } from './dto/create-course.dto';
 import { CoursesRepository } from './repositories/course.repository';
 import { ChapterRepository } from './repositories/chapter.repository';
 import { QuestionRepository } from './repositories/question.repository';
@@ -15,6 +15,7 @@ import { QuestionModel } from './models/question.model';
 import { PaymentRepository } from '../payment/repositories/payment.repository';
 import { CourseRatingRepository } from './repositories/course-rating.repository';
 import { CourseRatingModel } from './models/course-rating.model';
+import { IStatus } from '../payment/interface/payment.interface';
 
 @Injectable()
 export class CoursesService {
@@ -25,7 +26,8 @@ export class CoursesService {
     private readonly quizRepository: QuizRepository,
     private readonly quizAttemptRepository:QuizAttemptRepository,
     private readonly paymentRepository: PaymentRepository,
-    private readonly courseRatingRepository: CourseRatingRepository
+    private readonly courseRatingRepository: CourseRatingRepository,
+    
   ){}
 
   async createCourse(data: CreateCourseDto, transaction: Transaction){
@@ -407,5 +409,43 @@ async reviewQuiz(user: IUser, quizId: string) {
      return await this.chapterRepository.update({courseId, id}, {...data}, transaction);
   }
 
+  async recommendedCourse(data: RecommendedCourseDto){
+
+    const { page, limit } = data;
+
+    const includeOption = {
+     
+      attributes: [
+        'courseId',
+        [Sequelize.fn('COUNT', Sequelize.col('course_id')), 'salesCount']
+      ],
+      include: [
+        {
+          model: CoursesModel,
+          attributes: {
+            include: [
+              [
+                Sequelize.literal(`(
+                  SELECT json_build_object(
+                    'rating', ROUND(AVG(r.rating)::numeric, 1),
+                    'total', COUNT(r.id)
+                  )
+                  FROM "course_ratings" r
+                  WHERE r."courseId" = "course"."id"
+                )`),
+                "ratingStats"
+              ]
+            ]
+          }
+        }
+      ],
+      group: ['courseId', 'course.id'], 
+      order: [[Sequelize.literal(`"salesCount"`), 'DESC']],
+      limit: 50
+    };
+    
+    return await this.paymentRepository.findAll({ status: IStatus.successful }, <unknown>includeOption);
+    
+  }
 
 }
