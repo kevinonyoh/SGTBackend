@@ -69,6 +69,7 @@ export class CoursesService {
       imagePath: q.imagePath || null,
       imageType: q.imageType || null,
       publicId: q.publicId || null,
+      explanatoryVideoUrl: q.explanatoryVideoUrl || null,
       answerOptions: q.answerOptions
     }));
 
@@ -85,9 +86,9 @@ export class CoursesService {
 
     const quiz = await this.quizRepository.findOne({id: quizId});
 
-    const quizJson = quiz.toJSON();
-
     if(!quiz) throw new BadRequestException("Quiz does not exist");
+
+    const quizJson = quiz.toJSON();
 
     const defaultLimit = quizJson.default;
     
