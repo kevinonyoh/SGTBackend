@@ -45,6 +45,10 @@ export class QuizModel extends Model<QuizModel>{
     @Column(DataType.INTEGER)
     default: number;
 
+    @AllowNull(true)
+    @Column(DataType.INTEGER)
+    timeLimit: number;
+
     @ForeignKey(() => CoursesModel)
     @AllowNull(false)
     @Column(DataType.UUID)
@@ -63,6 +67,16 @@ export class QuizModel extends Model<QuizModel>{
     @HasMany(() => QuestionModel)
     questions: QuestionModel[];
 
+
+    toJSON(timeLimit?: number){
+         
+        const values: any = Object.assign({}, this.get());
+
+        if(timeLimit)  values.timeLimit = timeLimit;
+
+        return values;
+        
+    }
 }
 
 

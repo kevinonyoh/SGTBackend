@@ -44,31 +44,38 @@ export class CreateChapterDto{
     @IsNotEmpty()
     description: string;
     
-    @IsString()
-    @IsNotEmpty()
-    publicId: string;
-
-    @IsString()
-    @IsNotEmpty()
-    url: string;
-
-    @IsString()
-    @IsNotEmpty()
-    format: string;
-
-    @IsString()
-    @IsNotEmpty()
-    resourceType: string;
-
-    @IsNumber()
-    @IsNotEmpty()
-    duration: number;
+    @ValidateNested({ each: true })
+    @Type(() => SectionDto)
+    sections: SectionDto[];
 
     @IsString()
     @IsOptional()
     additionalResources: string;
 
 }
+
+class SectionDto {
+    @IsString()
+    @IsNotEmpty()
+    publicId: string;
+  
+    @IsString()
+    @IsNotEmpty()
+    url: string;
+  
+    @IsString()
+    @IsNotEmpty()
+    format: string;
+  
+    @IsString()
+    @IsNotEmpty()
+    resourceType: string;
+  
+    @IsNumber()
+    @IsNotEmpty()
+    duration: number;
+  }
+
 
 export class UpdateChapterDto{
     @IsString()
@@ -129,6 +136,10 @@ export class CreateQuizDto{
     @IsNotEmpty()
     questionType: IQuestionType;
 
+    @IsNumber()
+    @IsOptional()
+    timeLimit: number;
+
     @IsString()
     @IsOptional()
     chapterId: string;
@@ -159,6 +170,10 @@ export class updateQuizDto{
     @IsNumber()
     @IsOptional()
     year: number;
+
+    @IsNumber()
+    @IsOptional()
+    timeLimit: number;
 
     @IsEnum(IQuestionType)
     @IsOptional()
@@ -280,6 +295,10 @@ export class GetCourseDto{
     @IsNumber()
     @IsOptional()
     limit: number;
+
+    @IsNumber()
+    @IsOptional()
+    timeLimit: number;
 
 }
 

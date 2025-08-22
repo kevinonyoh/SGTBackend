@@ -41,3 +41,11 @@ export enum IDiet{
    may = 'may',
    november = 'november'
 }
+
+export interface ISection {
+    publicId: string;
+    url: string;
+    format: string;
+    resourceType: string;
+    duration: number;
+  }

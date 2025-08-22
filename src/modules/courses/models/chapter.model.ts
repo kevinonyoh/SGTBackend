@@ -1,5 +1,6 @@
 import { AllowNull, BelongsTo, Column, DataType, Default, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { CoursesModel } from "./course.model";
+import { ISection } from "../interfaces/courses.interface";
 
 
 @Table({
@@ -24,25 +25,9 @@ export class ChapterModel extends Model<ChapterModel>{
     description: string;
 
     @AllowNull(false)
-    @Column
-    publicId: string;
-
-    @AllowNull(false)
-    @Column
-    url: string;
-
-    @AllowNull(false)
-    @Column
-    format: string;
-
-    @AllowNull(false)
-    @Default("video")
-    @Column
-    resourceType: string;
-
-    @AllowNull(false)
-    @Column(DataType.FLOAT)
-    duration: number;
+    @Default([])
+    @Column(DataType.JSONB) 
+    sections: ISection[];
 
     @AllowNull
     @Column

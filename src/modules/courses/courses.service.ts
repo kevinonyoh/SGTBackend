@@ -80,21 +80,40 @@ export class CoursesService {
 
   async findQuestion(quizId: string, data: GetCourseDto){
 
-     const {page, limit} = data;
+     const {page, limit, timeLimit} = data;
 
-    
+    let question : any;
+
 
     const quiz = await this.quizRepository.findOne({id: quizId});
 
     if(!quiz) throw new BadRequestException("Quiz does not exist");
 
-    const quizJson = quiz.toJSON();
-
-    const defaultLimit = quizJson.default;
+    let quizJson;
     
-    // if( defaultLimit > 0  )  return await this.questionRepository.findAllPaginated({quizId}, null, {order: Sequelize.literal('RANDOM()'), limit: defaultLimit });
+   if(timeLimit) quizJson = quiz.toJSON(timeLimit);
 
-    return await this.questionRepository.findAll({quizId});
+   if(!timeLimit) quizJson = quiz.toJSON();
+
+
+    const defaultLimit = quizJson.default;    
+    
+     if( defaultLimit > 0 && !limit  ){
+      question = await this.questionRepository.findAllPaginated({quizId}, null, {page: 1, limit: defaultLimit });
+
+     
+     } 
+
+    if(defaultLimit === 0 || limit){
+      question = await this.questionRepository.findAllPaginated({quizId}, null, {page, limit});
+
+     
+    } 
+
+    return {
+      ...quizJson,
+      question  
+    }
 
   }
 
