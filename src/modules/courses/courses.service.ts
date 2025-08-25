@@ -296,6 +296,10 @@ export class CoursesService {
 
 
  async courseRating(user: IUser, courseId: string, data: RatingDto, transaction: Transaction){
+
+    const course = await this.courseRepository.findOne({id: courseId});
+
+    if(!course) throw new BadRequestException("Course does not exist");
   
     const payment = await this.paymentRepository.findOne({userId: user.id, courseId});
 
@@ -303,14 +307,9 @@ export class CoursesService {
 
     const courseRating = await this.courseRatingRepository.findOne({userId: user.id, courseId});
 
-    if(!courseRating) throw new BadRequestException("User have already rate this course");
+    if(courseRating) throw new BadRequestException("User have already rate this course");
     
-    const course = await this.courseRepository.findOne({id: courseId});
-
-    if(!course) throw new BadRequestException("Course does not exist");
-
     await this.courseRatingRepository.create({userId: user.id, courseId, ...data}, transaction);
-
  }
 
 
