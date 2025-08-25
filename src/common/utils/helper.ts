@@ -69,3 +69,8 @@ export const calculateMinutesAgo = (minutes: number) => {
 
   return new Date(currentDate.getTime() - minutes * 60000);
 }
+
+
+export const calculateNewTimeLimit = (limit: number, oldLimit: number, timeLimit: number) => {
+   return (limit * timeLimit) / oldLimit;
+}

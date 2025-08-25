@@ -16,6 +16,7 @@ import { PaymentRepository } from '../payment/repositories/payment.repository';
 import { CourseRatingRepository } from './repositories/course-rating.repository';
 import { CourseRatingModel } from './models/course-rating.model';
 import { IStatus } from '../payment/interface/payment.interface';
+import * as helper from "src/common/utils/helper";
 
 @Injectable()
 export class CoursesService {
@@ -90,15 +91,20 @@ export class CoursesService {
     if(!quiz) throw new BadRequestException("Quiz does not exist");
 
     let quizJson;
+
+    quizJson = quiz.toJSON();
+
+    const defaultLimit = quizJson.default;   
     
-   if(timeLimit) quizJson = quiz.toJSON(timeLimit);
+    if(timeLimit) quizJson["timeLimit"] = timeLimit;
 
-   if(!timeLimit) quizJson = quiz.toJSON();
-
-
-    const defaultLimit = quizJson.default;    
+    if(limit && !timeLimit) {
+       const val = helper.calculateNewTimeLimit(limit, defaultLimit, quizJson.timeLimit);
+       
+       quizJson["timeLimit"] = val;
+    }
     
-     if( defaultLimit > 0 && !limit  ){
+    if( defaultLimit > 0 && !limit  ){
       question = await this.questionRepository.findAllPaginated({quizId}, null, {page: 1, limit: defaultLimit });
 
      
@@ -311,20 +317,22 @@ export class CoursesService {
  async userAttemptQuiz(user: IUser, data: QuizAttemptDto, transaction: Transaction) {
   const { quizId, attemptNumber, score, userAnswers } = data;
 
+  const attemptData = await this.quizAttemptRepository.findOne({userId: user.id, quizId});
+
   const filteredAnswers = userAnswers.map(ans => ({
     questionId: ans.questionId,
     answer: ans.answer
   }));
 
   const payload = {
-    userId: user.id,
-    quizId,
     attemptNumber,
     score,
     userAnswers: filteredAnswers
   };
 
-  await this.quizAttemptRepository.create(payload, transaction);
+  if(!attemptData) return await this.quizAttemptRepository.create({ userId: user.id, quizId, ...payload}, transaction);
+
+  return await this.quizAttemptRepository.update({userId: user.id, quizId}, {...payload}, transaction);
 }
 
 
