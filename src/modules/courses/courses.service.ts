@@ -112,7 +112,10 @@ export class CoursesService {
 
     if(defaultLimit === 0 || limit){
       question = await this.questionRepository.findAllPaginated({quizId}, null, {page, limit});
+     
+      const {total} = question;
 
+     if(total < limit) throw new BadRequestException("numbers of question requested is more than the total number of questions");
      
     } 
 
