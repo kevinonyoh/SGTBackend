@@ -11,6 +11,7 @@ module.exports = {
         allowNull: false,
         primaryKey: true,
       },
+      
       quiz_id: {
         type: Sequelize.UUID,
         allowNull: false,
@@ -21,35 +22,43 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
+
       question_content: {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      
       image_path: {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      
       image_type: {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      
       public_id: {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      
       explanatory_video_url: {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      
       answer_options: {
         type: Sequelize.JSONB,
         allowNull: false,
       },
+      
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
+      
       updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
