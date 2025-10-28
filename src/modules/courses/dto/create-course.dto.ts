@@ -74,6 +74,10 @@ class SectionDto {
     @IsNumber()
     @IsNotEmpty()
     duration: number;
+
+    @IsString()
+    @IsOptional()
+    additionalResources
   }
 
 

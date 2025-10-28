@@ -48,4 +48,5 @@ export interface ISection {
     format: string;
     resourceType: string;
     duration: number;
+    additionalResources: string; 
   }
