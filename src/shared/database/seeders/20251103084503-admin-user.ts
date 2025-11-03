@@ -1,11 +1,11 @@
 'use strict';
 
-import bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
+const bcrypt = require('bcrypt');
+const { v4: uuidv4 } = require('uuid');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     const password = await bcrypt.hash("Admin@123", 10);
 
     return queryInterface.bulkInsert("admins", [
@@ -18,21 +18,12 @@ module.exports = {
         password,
         is_email_verified: true,
         created_at: new Date(),
-        updated_at: new Date()          
+        updated_at: new Date()
       }
-    ])
+    ]);
   },
 
-  async down (queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
+  async down(queryInterface, Sequelize) {
+    await queryInterface.bulkDelete("admins", { email: "admin01@sgt.com.ng" });
   }
 };
-function uuidv4() {
-  throw new Error("Function not implemented.");
-}
-
