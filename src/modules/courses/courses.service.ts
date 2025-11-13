@@ -149,7 +149,7 @@ export class CoursesService {
                 'total', COUNT(r.id)
               )
               FROM "course_ratings" r
-              WHERE r."courseId" = "CoursesModel"."id"
+              WHERE r."course_id" = "CoursesModel"."id"
             )`),
             'ratingStats'
           ]
@@ -187,17 +187,18 @@ export class CoursesService {
           'totalChapters'
         ],
 
-          [
-            Sequelize.literal(`(
-              SELECT json_build_object(
-                'rating', ROUND(AVG(r.rating)::numeric, 1),
-                'total', COUNT(r.id)
-              )
-              FROM "course_ratings" r
-              WHERE r."courseId" = "CoursesModel"."id"
-            )`),
-            'ratingStats'
-          ]
+        [
+          Sequelize.literal(`(
+            SELECT json_build_object(
+              'rating', ROUND(AVG(r.rating)::numeric, 1),
+              'total', COUNT(r.id)
+            )
+            FROM "course_ratings" r
+            WHERE r."course_id" = "CoursesModel"."id"
+          )`),
+          'ratingStats'
+        ]
+        
         ]
       },
       include: [
@@ -237,7 +238,7 @@ export class CoursesService {
                 'total', COUNT(r.id)
               )
               FROM "course_ratings" r
-              WHERE r."courseId" = "CoursesModel"."id"
+              WHERE r."course_id" = "CoursesModel"."id"
             )`),
             'ratingStats'
           ]
@@ -275,7 +276,7 @@ export class CoursesService {
                 'total', COUNT(r.id)
               )
               FROM "course_ratings" r
-              WHERE r."courseId" = "CoursesModel"."id"
+              WHERE r."course_id" = "CoursesModel"."id"
             )`),
             'ratingStats'
           ]
@@ -461,7 +462,7 @@ async reviewQuiz(user: IUser, quizId: string) {
                     'total', COUNT(r.id)
                   )
                   FROM "course_ratings" r
-                  WHERE r."courseId" = "course"."id"
+                  WHERE r."course_id" = "course"."id"
                 )`),
                 "ratingStats"
               ]
