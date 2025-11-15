@@ -77,7 +77,7 @@ class SectionDto {
 
     @IsString()
     @IsOptional()
-    additionalResources
+    additionalResources: string;
   }
 
 
