@@ -173,7 +173,7 @@ export class PaymentService {
                       'total', COUNT(r.id)
                     )
                     FROM "course_ratings" r
-                    WHERE r."courseId" = "course"."id"
+                    WHERE r."course_id" = "course"."id"
                   )`),
                   "ratingStats"
                 ]
@@ -211,7 +211,7 @@ export class PaymentService {
                     'total', COUNT(r.id)
                   )
                   FROM "course_ratings" r
-                  WHERE r."courseId" = "course"."id"
+                  WHERE r."course_id" = "course"."id"
                 )`),
                 "ratingStats"
               ]
@@ -259,7 +259,7 @@ export class PaymentService {
                     'total', COUNT(r.id)
                   )
                   FROM "course_ratings" r
-                  WHERE r."courseId" = "course"."id"
+                  WHERE r."course_id" = "course"."id"
                 )`),
                 "ratingStats"
               ]
@@ -312,7 +312,7 @@ export class PaymentService {
                     'total', COUNT(r.id)
                   )
                   FROM "course_ratings" r
-                  WHERE r."courseId" = "course"."id"
+                  WHERE r."course_id" = "course"."id"
                 )`),
                 "ratingStats"
               ]
