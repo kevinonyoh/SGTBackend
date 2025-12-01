@@ -34,8 +34,8 @@ export class CreateCourseDto {
     date: Date;
 
     @IsNumber()
-    @IsOptional()
-    durationDays: number;
+    @IsNotEmpty()
+    durationMonths: number;
 }
 
 export class CreateChapterDto{

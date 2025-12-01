@@ -99,7 +99,7 @@ export class PaymentService {
 
       const courseContent = course.toJSON();
 
-      expirationDate.setMonth(expirationDate.getMonth() +  courseContent.durationDays);
+      expirationDate.setMonth(expirationDate.getMonth() +  courseContent.durationMonths);
 
       if( status.toLowerCase() === IStatus.successful) return await this.paymentRepository.update({tx_ref}, {status: IStatus.successful, expirationDate}, transaction);
 

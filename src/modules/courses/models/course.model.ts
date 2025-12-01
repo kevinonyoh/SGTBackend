@@ -53,7 +53,7 @@ export class CoursesModel extends Model<CoursesModel>{
 
     @AllowNull(true)
     @Column(DataType.INTEGER) 
-    durationDays: number;
+    durationMonths: number;
 
     @HasMany(() => ChapterModel, { as: 'chapters', foreignKey: 'courseId' })
     chapters: ChapterModel[];
