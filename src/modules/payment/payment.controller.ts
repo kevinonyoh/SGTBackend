@@ -30,6 +30,16 @@ export class PaymentController {
   }
 
 
+  @Get("user/verify-payment")
+  @HttpCode(200)
+  @ResponseMessage("payment verification")
+  async paymentComfirmationByUser(@Query() query: VerifyPaymentDto, @TransactionParam() transaction: Transaction){
+
+    return await this.paymentService.paymentConfirmation(query, transaction);
+
+  }
+
+
 
   @Role(IRole.SUPER_ADMIN)
   @Get("verify-payment")

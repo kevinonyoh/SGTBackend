@@ -85,12 +85,23 @@ export class PaymentService {
 
       if(!val) throw new BadRequestException("Transaction does not exist");
 
-      const response = await this.flutterwaveGateway.verifyPayment(tx_ref);
+       const response = await this.flutterwaveGateway.verifyPayment(tx_ref);
+ 
+      const courseId = val["courseId"];
 
+      const course =  await this.coursesService.findCourse(courseId);    
 
       const {status} = response;
 
-      if( status.toLowerCase() === IStatus.successful) return await this.paymentRepository.update({tx_ref}, {status: IStatus.successful}, transaction);
+      const purchaseDate = new Date();
+
+      const expirationDate = new Date(purchaseDate);
+
+      const courseContent = course.toJSON();
+
+      expirationDate.setMonth(expirationDate.getMonth() +  courseContent.durationDays);
+
+      if( status.toLowerCase() === IStatus.successful) return await this.paymentRepository.update({tx_ref}, {status: IStatus.successful, expirationDate}, transaction);
 
       if(status.toLowerCase() === IStatus.failed ) {
           
@@ -238,7 +249,7 @@ export class PaymentService {
 
     }
 
-    return await this.paymentRepository.findAllPaginated({userId: user.id, status: IStatus.successful}, <unknown>includeOption, {page, limit});
+    return await this.paymentRepository.findAllPaginated({userId: user.id, status: IStatus.successful, expirationDate: { [Op.gt]: new Date() }}, <unknown>includeOption, {page, limit});
   }
 
   async getCourse(user: IUser, courseId: string){
@@ -286,7 +297,7 @@ export class PaymentService {
 
     }
 
-    const hasAccess = await this.paymentRepository.findOne({ userId: user.id, courseId, status: IStatus.successful }, <unknown>includeOption);
+    const hasAccess = await this.paymentRepository.findOne({ userId: user.id, courseId, status: IStatus.successful,  expirationDate: { [Op.gt]: new Date() } }, <unknown>includeOption);
 
     return hasAccess;
 

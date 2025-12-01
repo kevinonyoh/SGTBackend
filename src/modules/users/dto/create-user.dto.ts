@@ -11,6 +11,10 @@ export class CreateUserDto {
     @IsNotEmpty()
     email: string;
 
+    @IsString()
+    @IsOptional()
+    phoneNumber: string;
+
     @IsArray()
     @ArrayNotEmpty() 
     @IsEnum(ICoursesInterest, { each: true })

@@ -5,7 +5,7 @@ import { ChapterRepository } from './repositories/chapter.repository';
 import { QuestionRepository } from './repositories/question.repository';
 import { QuizRepository } from './repositories/quiz.repository';
 import { QuizAttemptRepository } from './repositories/QuizAttempt.repository';
-import { Op, Sequelize, Transaction } from 'sequelize';
+import { Op, Sequelize, Transaction, where } from 'sequelize';
 import { QuizModel } from './models/quiz.model';
 import { ChapterModel } from './models/chapter.model';
 import { IUser } from '../users/interfaces/users.interface';
@@ -103,6 +103,8 @@ export class CoursesService {
        
        quizJson["timeLimit"] = val;
     }
+
+    if(quiz["questionType"] === IQuestionType.general_question) return await this.handleGeneralQuestionType(quiz, data, quizJson);
     
     if( defaultLimit > 0 && !limit  ){
       question = await this.questionRepository.findAllPaginated({quizId}, null, {page: 1, limit: defaultLimit });
@@ -391,6 +393,12 @@ async reviewQuiz(user: IUser, quizId: string) {
     
     const {questionType} = data;
 
+    const quizType = await this.quizRepository.findOne({courseId, questionType});
+
+    const quizTypeJson = quizType.toJSON();
+
+    if(quizType["questionType"] === IQuestionType.general_question) return await this.handleAllGeneralQuestionType(quizType, quizTypeJson)
+
     const includeOption = {
       include: [
         {
@@ -478,5 +486,113 @@ async reviewQuiz(user: IUser, quizId: string) {
     return await this.paymentRepository.findAll({ status: IStatus.successful }, <unknown>includeOption);
     
   }
+
+
+  private async handleGeneralQuestionType(quiz: any, data: GetCourseDto, quizJson: any) {
+    const { page, limit, timeLimit } = data;
+    
+    const defaultLimit = quizJson.default;
+  
+    const pastQuizzes = await this.quizRepository.findAll({ courseId: quiz.courseId, questionType: IQuestionType.past_question  });
+  
+    const quickQuizzes = await this.quizRepository.findAll({  courseId: quiz.courseId,  questionType: IQuestionType.quick_question });
+  
+    const quizIds = [
+      ...pastQuizzes.map((q) => q.id),
+      ...quickQuizzes.map((q) => q.id),
+    ];
+  
+    if (quizIds.length === 0) {
+      throw new BadRequestException("No past or quick quizzes available for this course");
+    }
+  
+    const questions = await this.questionRepository.findAll({ quizId: quizIds });
+  
+    if (questions.length === 0) {
+      throw new BadRequestException("No questions available for general question type");
+    }
+  
+
+    const uniqueQuestions = Array.from(
+      new Map(questions.map((q) => [q.id, q])).values()
+    );
+  
+    const shuffled = uniqueQuestions.sort(() => Math.random() - 0.5);
+  
+    if (shuffled.length > uniqueQuestions.length) {
+      shuffled.length = uniqueQuestions.length;
+    }
+  
+    const totalAvailable = shuffled.length;
+    const finalLimit = limit || defaultLimit;
+  
+    if (finalLimit > totalAvailable) {
+      throw new BadRequestException(
+        "Requested number of questions is more than available general questions"
+      );
+    }
+  
+  
+    const startIndex = (page - 1) * finalLimit;
+    const paginatedQuestions = shuffled.slice(
+      startIndex,
+      startIndex + finalLimit
+    );
+  
+    if (timeLimit) quizJson["timeLimit"] = timeLimit;
+  
+    return {
+      ...quizJson,
+      question: {
+        total: totalAvailable,
+        rows: paginatedQuestions,
+      },
+    };
+  }
+
+
+  private async handleAllGeneralQuestionType(quiz: any, quizJson: any) {
+
+    const pastQuizzes = await this.quizRepository.findAll({
+      courseId: quiz.courseId,
+      questionType: IQuestionType.past_question
+    });
+  
+    const quickQuizzes = await this.quizRepository.findAll({
+      courseId: quiz.courseId,
+      questionType: IQuestionType.quick_question
+    });
+  
+    const quizIds = [
+      ...pastQuizzes.map((q) => q.id),
+      ...quickQuizzes.map((q) => q.id),
+    ];
+  
+    if (quizIds.length === 0) {
+      throw new BadRequestException("No past or quick quizzes available for this course");
+    }
+  
+    const questions = await this.questionRepository.findAll({ quizId: quizIds });
+  
+    if (questions.length === 0) {
+      throw new BadRequestException("No questions available for general question type");
+    }
+  
+    const uniqueQuestions = Array.from(
+      new Map(questions.map((q) => [q.id, q])).values()
+    );
+  
+    const shuffled = uniqueQuestions.sort(() => Math.random() - 0.5);
+  
+    return {
+      ...quizJson,
+      question: {
+        total: shuffled.length,
+        rows: shuffled,
+      },
+    };
+  }
+  
+  
 
 }

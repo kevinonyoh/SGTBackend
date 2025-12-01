@@ -32,6 +32,10 @@ export class CreateCourseDto {
     @IsDate()
     @IsNotEmpty()
     date: Date;
+
+    @IsNumber()
+    @IsOptional()
+    durationDays: number;
 }
 
 export class CreateChapterDto{

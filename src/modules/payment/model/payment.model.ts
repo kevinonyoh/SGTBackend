@@ -35,6 +35,10 @@ export class PaymentModel extends Model<PaymentModel>{
     @Column
     tx_ref: string;
 
+    @AllowNull(true)
+    @Column(DataType.DATE)
+    expirationDate: Date;
+
     @BelongsTo(() => CoursesModel)
     course: CoursesModel;
     
