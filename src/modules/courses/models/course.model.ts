@@ -35,14 +35,6 @@ export class CoursesModel extends Model<CoursesModel>{
     @Column(DataType.ENUM(ICoursesInterest.ATS, ICoursesInterest.ICAN, ICoursesInterest.Olevel))
     courseType: ICoursesInterest;
 
-    @AllowNull(false)
-    @Column(DataType.ENUM(ICoursesLevel.Beginner, ICoursesLevel.Intermediate, ICoursesLevel.Expert))
-    courseLevel: ICoursesLevel;
-
-    @AllowNull(false)
-    @Column(DataType.DATE)
-    date: Date;
-
     @AllowNull(true)
     @Column
     explanatoryVideoUrl: string;

@@ -25,14 +25,6 @@ export class CreateCourseDto {
     @IsNotEmpty()
     courseType: ICoursesInterest;
 
-    @IsEnum(ICoursesLevel)
-    @IsNotEmpty()
-    courseLevel: ICoursesLevel;
-
-    @IsDate()
-    @IsNotEmpty()
-    date: Date;
-
     @IsNumber()
     @IsNotEmpty()
     durationMonths: number;
@@ -406,11 +398,6 @@ export class UpdateCourseDto{
     @IsEnum(ICoursesInterest)
     @IsOptional()
     courseType: ICoursesInterest;
-
-    @IsEnum(ICoursesLevel)
-    @IsOptional()
-    courseLevel: ICoursesLevel;
-
 }
 
 export class GetQuizByTypeDto{
