@@ -3,10 +3,10 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.addColumn('payment', 'expiration_date', {
-      type: Sequelize.DATE,
-      allowNull: true,
-    });
+    // await queryInterface.addColumn('payment', 'expiration_date', {
+    //   type: Sequelize.DATE,
+    //   allowNull: true,
+    // });
   },
 
   async down (queryInterface, Sequelize) {
