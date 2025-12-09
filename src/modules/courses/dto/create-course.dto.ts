@@ -40,6 +40,7 @@ export class CreateChapterDto{
     @IsNotEmpty()
     description: string;
     
+    @IsOptional()
     @ValidateNested({ each: true })
     @Type(() => SectionDto)
     sections: SectionDto[];
@@ -109,6 +110,12 @@ export class UpdateChapterDto{
     @IsString()
     @IsOptional()
     additionalResources: string;
+
+    @IsOptional()
+    @ValidateNested({ each: true })
+    @Type(() => SectionDto)
+    sections: SectionDto[];
+
 
 }
 

@@ -444,8 +444,25 @@ async reviewQuiz(user: IUser, quizId: string) {
      return await this.quizRepository.update({courseId, id}, {...data}, transaction);
   }
 
+  async deleteSection(courseId:string, id:string,  publicId: string, transaction: Transaction){
+    const chapter = await this.chapterRepository.findOne({ courseId, id });
+
+    if(!chapter) throw new BadRequestException("Chapter does not exist");
+
+    const sections = chapter.sections.filter(section => section.publicId !== publicId);
+
+    return await this.chapterRepository.update({ courseId, id }, { sections }, transaction);
+  }
+
   async updateChapter(courseId:string, id:string, data: UpdateChapterDto, transaction: Transaction){
-     return await this.chapterRepository.update({courseId, id}, {...data}, transaction);
+    
+    const chapter = await this.chapterRepository.findOne({ courseId, id });
+
+    if(!chapter) throw new BadRequestException("Chapter does not exist");
+
+    if(data["sections"]) data["sections"] = [...chapter["sections"], ...data["sections"]];
+
+    return await this.chapterRepository.update({courseId, id}, {...data}, transaction);
   }
 
   async recommendedCourse(data: RecommendedCourseDto){

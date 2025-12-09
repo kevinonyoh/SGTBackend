@@ -165,6 +165,8 @@ export class CoursesController {
      return await this.coursesService.deleteChapter(courseId, id, transaction);
   }
 
+
+
   @Role(IRole.SUPER_ADMIN, IRole.MANAGE_COURSES)
   @Put("quiz/:courseId/:quizId")
   @ResponseMessage("quiz updated successfully") 
@@ -177,6 +179,13 @@ export class CoursesController {
   @ResponseMessage("chapter updated successfully") 
   async UpdateChapter(@Param("courseId") courseId: string, @Param("chapterId") id: string, @Body() body: UpdateChapterDto, @TransactionParam() transaction: Transaction){
     return await this.coursesService.updateChapter(courseId, id, body, transaction);
+  }
+
+  @Role(IRole.SUPER_ADMIN)
+  @Delete("chapters/:courseId/:chapterId/:publicId")
+  @ResponseMessage("chapter updated successfully") 
+  async deleteSection(@Param("courseId") courseId: string, @Param("chapterId") id: string, @Param("publicId") publicId: string, @TransactionParam() transaction: Transaction){
+    return await this.coursesService.deleteSection(courseId, id, publicId, transaction);
   }
 
   @Public()

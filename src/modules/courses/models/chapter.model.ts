@@ -20,11 +20,11 @@ export class ChapterModel extends Model<ChapterModel>{
     @Column
     chapterTitle: string;
     
-    @AllowNull(false)
+    @AllowNull(true)
     @Column(DataType.TEXT)
     description: string;
 
-    @AllowNull(false)
+    @AllowNull(true)
     @Default([])
     @Column(DataType.JSONB) 
     sections: ISection[];
