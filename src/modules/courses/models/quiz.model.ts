@@ -38,7 +38,7 @@ export class QuizModel extends Model<QuizModel>{
     questionType: IQuestionType;
 
     @AllowNull(true)
-    @Column(DataType.ENUM(IDiet.may, IDiet.november))
+    @Column(DataType.ENUM(IDiet.may, IDiet.november, IDiet.march, IDiet.september))
     diet: IDiet;
 
     @AllowNull(true)

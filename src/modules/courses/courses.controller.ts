@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put,  Query } from '@nestjs/common';
 import { CoursesService } from './courses.service';
-import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuizByTypeDto, GetUserPageCourses, QuizAttemptDto, RatingDto, RecommendedCourseDto, UpdateChapterDto, UpdateCourseDto, UpdateQuestionDto, updateQuizDto } from './dto/create-course.dto';
+import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetPastQuestionDto, GetQuizByTypeDto, GetUserPageCourses, QuizAttemptDto, RatingDto, RecommendedCourseDto, UpdateChapterDto, UpdateCourseDto, UpdateQuestionDto, updateQuizDto } from './dto/create-course.dto';
 import { Role } from 'src/common/decorators/role.decorator';
 import { IRole } from '../admin/interfaces/admin.interface';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
@@ -110,6 +110,12 @@ export class CoursesController {
   @ResponseMessage("quiz review")
   async getQuizReview(@User() user: IUser, @Param("quizId") quizId: string){
       return await this.coursesService.reviewQuiz(user, quizId);
+  }
+
+  @Get("past-question/:id")
+  @ResponseMessage("past question")
+  async getPastQuestion(@Param("id") id: string, @Query() query: GetPastQuestionDto){
+    return await this.coursesService.findPastQuestion(id, query);
   }
 
   @Get("question/:id")

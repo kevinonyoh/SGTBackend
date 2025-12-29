@@ -1,7 +1,8 @@
 import { AllowNull, BelongsTo, Column, DataType, Default, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { QuizModel } from "./quiz.model";
 import { UsersModel } from "src/modules/users/models/users.model.";
-import { IQuestion, IUserAnswers } from "../interfaces/courses.interface";
+import { IDiet, IQuestion, IUserAnswers } from "../interfaces/courses.interface";
+
 
 
 
@@ -45,6 +46,14 @@ export class QuestionModel extends Model<QuestionModel>{
     @AllowNull(true)
     @Column
     explanatoryVideoUrl: string;
+
+    @AllowNull(true)
+    @Column(DataType.INTEGER)
+    year: number;
+
+    @AllowNull(true)
+    @Column(DataType.ENUM(IDiet.may, IDiet.november, IDiet.march, IDiet.september))
+    diet: IDiet;
 
     @AllowNull(false)
     @Column(DataType.JSONB)

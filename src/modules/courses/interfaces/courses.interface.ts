@@ -39,11 +39,14 @@ export enum IQuestionType{
 
 export enum IDiet{
    may = 'may',
+   march = 'march',
+   september= 'september',
    november = 'november'
 }
 
 export interface ISection {
     publicId: string;
+    name: string;
     url: string;
     format: string;
     resourceType: string;

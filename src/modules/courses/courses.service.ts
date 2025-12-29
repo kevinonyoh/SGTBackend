@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetQuestionDto, GetQuizByTypeDto, GetUserPageCourses, QuizAttemptDto, RatingDto, RecommendedCourseDto, UpdateChapterDto, UpdateCourseDto, UpdateQuestionDto, updateQuizDto } from './dto/create-course.dto';
+import { CreateChapterDto, CreateCourseDto, CreateQuestionDto, CreateQuizDto, GetCourseByTypeDto, GetCourseDto, GetPastQuestionDto, GetQuestionDto, GetQuizByTypeDto, GetUserPageCourses, QuizAttemptDto, RatingDto, RecommendedCourseDto, UpdateChapterDto, UpdateCourseDto, UpdateQuestionDto, updateQuizDto } from './dto/create-course.dto';
 import { CoursesRepository } from './repositories/course.repository';
 import { ChapterRepository } from './repositories/chapter.repository';
 import { QuestionRepository } from './repositories/question.repository';
@@ -71,11 +71,59 @@ export class CoursesService {
       imageType: q.imageType || null,
       publicId: q.publicId || null,
       explanatoryVideoUrl: q.explanatoryVideoUrl || null,
+      year: q.year || null,
+      diet: q.diet || null,
       answerOptions: q.answerOptions
     }));
 
 
   return await this.questionRepository.bulkCreate(questions, transaction);
+
+  }
+
+  async findPastQuestion(quizId: string, data: GetPastQuestionDto){
+    const {page, limit, timeLimit, year, diet} = data;
+
+    const quiz = await this.quizRepository.findOne({id: quizId});
+
+    if(!quiz) throw new BadRequestException("Quiz does not exist");
+
+    let quizJson;
+
+    let question : any;
+
+    quizJson = quiz.toJSON();
+
+    const defaultLimit = quizJson.default;   
+    
+    if(timeLimit) quizJson["timeLimit"] = timeLimit;
+
+    quizJson["year"] =  year;
+    
+    quizJson["diet"] = diet;
+
+    if(limit && !timeLimit) {
+       const val = helper.calculateNewTimeLimit(limit, defaultLimit, quizJson.timeLimit);
+       
+       quizJson["timeLimit"] = val;
+    }
+
+    if( defaultLimit > 0 && !limit  ){
+      question = await this.questionRepository.findAllPaginated({quizId, year, diet}, null, {page: 1, limit: defaultLimit });
+
+     
+     } 
+
+    if(defaultLimit === 0 || limit){
+      
+      question = await this.questionRepository.findAllPaginated({quizId, year, diet}, null, {page, limit});
+        
+    } 
+
+    return {
+      ...quizJson,
+      question  
+    }
 
   }
 

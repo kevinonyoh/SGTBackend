@@ -1,4 +1,4 @@
-import { ArrayMinSize, IsArray, IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Max, Min, ValidateIf, ValidateNested } from "class-validator";
+import { ArrayMinSize, IsArray, IsBoolean, IsDate, IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Max, Min, ValidateIf, ValidateNested } from "class-validator";
 import { ICoursesInterest } from "src/modules/users/interfaces/users.interface";
 import { ICoursesLevel, IDiet, IQuestionType, IQuizType } from "../interfaces/courses.interface";
 import { Type } from "class-transformer";
@@ -63,6 +63,10 @@ class SectionDto {
     @IsString()
     @IsNotEmpty()
     format: string;
+
+    @IsString()
+    @IsNotEmpty()
+    name: string;
   
     @IsString()
     @IsNotEmpty()
@@ -238,6 +242,16 @@ export class CreateQuestionDto{
     @IsOptional()
     explanatoryVideoUrl: string;
 
+    @IsInt()
+    @IsOptional()
+    @Min(1900)
+    @Max(new Date().getFullYear())
+    year: number;
+
+    @IsEnum(IDiet)
+    @IsOptional()
+    diet: IDiet;
+
     @IsArray()
     @ValidateNested({ each: true })
     @ArrayMinSize(1)
@@ -308,6 +322,33 @@ export class GetCourseDto{
     timeLimit: number;
 
 }
+
+export class GetPastQuestionDto{
+    @IsNumber()
+    @IsOptional()
+    page: number;
+
+    @IsNumber()
+    @IsOptional()
+    limit: number;
+
+    @IsNumber()
+    @IsOptional()
+    timeLimit: number;
+
+    @IsInt()
+    @IsNotEmpty()
+    @Min(1900)
+    @Max(new Date().getFullYear())
+    year: number;
+
+    @IsEnum(IDiet)
+    @IsNotEmpty()
+    diet: IDiet;
+}
+
+
+
 
 export class RatingDto{
     @IsNumber()
