@@ -589,11 +589,11 @@ async reviewQuiz(user: IUser, quizId: string) {
     const finalLimit = limit || defaultLimit;
   
   
-    const startIndex = (page - 1) * finalLimit;
-    const paginatedQuestions = shuffled.slice(
-      startIndex,
-      startIndex + finalLimit
-    );
+    // const startIndex = (page - 1) * finalLimit;
+    // const paginatedQuestions = shuffled.slice(
+    //   startIndex,
+    //   startIndex + finalLimit
+    // );
   
     if (timeLimit) quizJson["timeLimit"] = timeLimit;
   
@@ -601,7 +601,7 @@ async reviewQuiz(user: IUser, quizId: string) {
       ...quizJson,
       question: {
         total: totalAvailable,
-        rows: paginatedQuestions,
+        rows: shuffled,
       },
     };
   }
