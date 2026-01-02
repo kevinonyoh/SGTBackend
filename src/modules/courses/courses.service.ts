@@ -156,8 +156,6 @@ export class CoursesService {
     
     if( defaultLimit > 0 && !limit  ){
       question = await this.questionRepository.findAllPaginated({quizId}, null, {page: 1, limit: defaultLimit });
-
-     
      } 
 
     if(defaultLimit === 0 || limit){
@@ -165,8 +163,7 @@ export class CoursesService {
      
       const {total} = question;
 
-     if(total < limit) throw new BadRequestException("numbers of question requested is more than the total number of questions");
-     
+        
     } 
 
     return {
@@ -590,12 +587,6 @@ async reviewQuiz(user: IUser, quizId: string) {
   
     const totalAvailable = shuffled.length;
     const finalLimit = limit || defaultLimit;
-  
-    if (finalLimit > totalAvailable) {
-      throw new BadRequestException(
-        "Requested number of questions is more than available general questions"
-      );
-    }
   
   
     const startIndex = (page - 1) * finalLimit;
