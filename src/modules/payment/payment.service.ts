@@ -303,7 +303,7 @@ export class PaymentService {
 
     const payment = hasAccess.toJSON();
 
-    for (const quiz of payment["courses"].quizzes) {
+    for (const quiz of payment["course"].quizzes) {
       if (quiz.questionType === IQuestionType.general_question) {
         
         let val : GetCourseDto = {
@@ -318,7 +318,6 @@ export class PaymentService {
 
       }
     }
-
 
     return payment;
 
