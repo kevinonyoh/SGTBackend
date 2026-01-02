@@ -550,7 +550,7 @@ async reviewQuiz(user: IUser, quizId: string) {
   }
 
 
-  private async handleGeneralQuestionType(quiz: any, data: GetCourseDto, quizJson: any) {
+  async handleGeneralQuestionType(quiz: any, data: GetCourseDto, quizJson: any) {
     const { page, limit, timeLimit } = data;
     
     const defaultLimit = quizJson.default;
@@ -607,7 +607,7 @@ async reviewQuiz(user: IUser, quizId: string) {
   }
 
 
-  private async handleAllGeneralQuestionType(quiz: any, quizJson: any) {
+ async handleAllGeneralQuestionType(quiz: any, quizJson: any) {
 
     const pastQuizzes = await this.quizRepository.findAll({
       courseId: quiz.courseId,

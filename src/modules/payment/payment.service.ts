@@ -16,6 +16,8 @@ import { calculateMinutesAgo } from 'src/common/utils/helper';
 import { QuizModel } from '../courses/models/quiz.model';
 import { QuestionModel } from '../courses/models/question.model';
 import { ChapterModel } from '../courses/models/chapter.model';
+import { IQuestionType } from '../courses/interfaces/courses.interface';
+import { GetCourseDto } from '../courses/dto/create-course.dto';
 
 
 
@@ -299,7 +301,26 @@ export class PaymentService {
 
     const hasAccess = await this.paymentRepository.findOne({ userId: user.id, courseId, status: IStatus.successful,  expirationDate: { [Op.gt]: new Date() } }, <unknown>includeOption);
 
-    return hasAccess;
+    const payment = hasAccess.toJSON();
+
+    for (const quiz of payment["courses"].quizzes) {
+      if (quiz.questionType === IQuestionType.general_question) {
+        
+        let val : GetCourseDto = {
+          page: null,
+          limit: null,
+          timeLimit: null
+        };
+
+        const generalQuestions = await this.coursesService.handleGeneralQuestionType(quiz, val, quiz);
+
+        quiz.questions = generalQuestions.question.rows;
+
+      }
+    }
+
+
+    return payment;
 
   }
 
