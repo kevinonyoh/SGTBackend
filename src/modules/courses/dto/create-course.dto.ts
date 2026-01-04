@@ -45,6 +45,10 @@ export class CreateChapterDto{
     @Type(() => SectionDto)
     sections: SectionDto[];
 
+    @IsNumber()
+    @IsOptional()
+    index: number;
+
     @IsString()
     @IsOptional()
     additionalResources: string;
@@ -67,6 +71,10 @@ class SectionDto {
     @IsString()
     @IsNotEmpty()
     name: string;
+
+    @IsNumber()
+    @IsOptional()
+    index: number;
   
     @IsString()
     @IsNotEmpty()

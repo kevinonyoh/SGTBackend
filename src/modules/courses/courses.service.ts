@@ -555,9 +555,9 @@ async reviewQuiz(user: IUser, quizId: string) {
     
     const defaultLimit = quizJson.default;
   
-    const pastQuizzes = await this.quizRepository.findAll({ courseId: quiz.courseId, questionType: IQuestionType.past_question  });
+    const pastQuizzes = await this.quizRepository.findAll({ courseId: quiz.courseId, type: quizJson["type"], questionType: IQuestionType.past_question  });
   
-    const quickQuizzes = await this.quizRepository.findAll({  courseId: quiz.courseId,  questionType: IQuestionType.quick_question });
+    const quickQuizzes = await this.quizRepository.findAll({  courseId: quiz.courseId, type: quizJson["type"],  questionType: IQuestionType.quick_question });
   
     const quizIds = [
       ...pastQuizzes.map((q) => q.id),
@@ -589,11 +589,7 @@ async reviewQuiz(user: IUser, quizId: string) {
     const finalLimit = limit || defaultLimit;
   
   
-    // const startIndex = (page - 1) * finalLimit;
-    // const paginatedQuestions = shuffled.slice(
-    //   startIndex,
-    //   startIndex + finalLimit
-    // );
+    const paginatedQuestions = shuffled.slice(0, finalLimit);
   
     if (timeLimit) quizJson["timeLimit"] = timeLimit;
   
@@ -601,7 +597,7 @@ async reviewQuiz(user: IUser, quizId: string) {
       ...quizJson,
       question: {
         total: totalAvailable,
-        rows: shuffled,
+        rows: paginatedQuestions,
       },
     };
   }

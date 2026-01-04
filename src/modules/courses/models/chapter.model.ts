@@ -29,6 +29,10 @@ export class ChapterModel extends Model<ChapterModel>{
     @Column(DataType.JSONB) 
     sections: ISection[];
 
+    @AllowNull(true)
+    @Column(DataType.INTEGER)
+    index: number;
+
     @AllowNull
     @Column
     additionalResources: string;

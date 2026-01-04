@@ -46,6 +46,7 @@ export enum IDiet{
 
 export interface ISection {
     publicId: string;
+    index: number;
     name: string;
     url: string;
     format: string;
