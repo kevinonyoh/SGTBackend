@@ -461,6 +461,11 @@ export class GetQuizByTypeDto{
     @IsEnum(IQuestionType)
     @IsNotEmpty()
     questionType: IQuestionType;
+
+    @IsEnum(IQuizType)
+    @IsOptional()
+    type: IQuizType;
+
 }
 
 export class RecommendedCourseDto{

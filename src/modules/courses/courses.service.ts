@@ -399,7 +399,6 @@ async reviewQuiz(user: IUser, quizId: string) {
   const questionIds = userAnswers.map(a => a.questionId);
 
   const questions = await this.questionRepository.findAll( { id: { [Op.in]: questionIds } });
-
   
   const questionWithAnswer = questions.map(question => {
     const userAnswer = userAnswers.find(a => a.questionId === question.id);
@@ -436,9 +435,14 @@ async reviewQuiz(user: IUser, quizId: string) {
 
   async findQuizByQuestionType(courseId: string, data: GetQuizByTypeDto){
     
-    const {questionType} = data;
+    const {questionType, type} = data;
 
-    const quizType = await this.quizRepository.findOne({courseId, questionType});
+    const payload = {
+      courseId,
+      questionType
+    }
+
+    const quizType = await this.quizRepository.findOne({ ...payload });
 
     const quizTypeJson = quizType.toJSON();
 
@@ -605,15 +609,9 @@ async reviewQuiz(user: IUser, quizId: string) {
 
  async handleAllGeneralQuestionType(quiz: any, quizJson: any) {
 
-    const pastQuizzes = await this.quizRepository.findAll({
-      courseId: quiz.courseId,
-      questionType: IQuestionType.past_question
-    });
+    const pastQuizzes = await this.quizRepository.findAll({ courseId: quiz.courseId, type: quizJson["type"], questionType: IQuestionType.past_question });
   
-    const quickQuizzes = await this.quizRepository.findAll({
-      courseId: quiz.courseId,
-      questionType: IQuestionType.quick_question
-    });
+    const quickQuizzes = await this.quizRepository.findAll({ courseId: quiz.courseId, type: quizJson["type"], questionType: IQuestionType.quick_question });
   
     const quizIds = [
       ...pastQuizzes.map((q) => q.id),
