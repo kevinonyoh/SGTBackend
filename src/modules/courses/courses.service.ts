@@ -442,7 +442,18 @@ async reviewQuiz(user: IUser, quizId: string) {
       questionType
     }
 
-    const quizType = await this.quizRepository.findOne({ ...payload });
+    let quizType;
+
+    if(type){
+      quizType = await this.quizRepository.findOne({ ...payload, type });
+
+      if(!quizType) throw new BadRequestException("quiz for this type does not exist");
+      
+    } else {
+      quizType = await this.quizRepository.findOne({ ...payload });
+    }
+     
+    
 
     const quizTypeJson = quizType.toJSON();
 
