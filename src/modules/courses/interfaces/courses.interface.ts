@@ -54,3 +54,10 @@ export interface ISection {
     duration: number;
     additionalResources: string; 
   }
+
+
+export interface IScenario{
+ equation: string;
+ text: string;
+ tables: any[];   
+}

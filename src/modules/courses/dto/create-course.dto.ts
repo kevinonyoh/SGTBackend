@@ -1,6 +1,6 @@
-import { ArrayMinSize, IsArray, IsBoolean, IsDate, IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Max, Min, ValidateIf, ValidateNested } from "class-validator";
+import { ArrayMinSize, IsArray, IsBoolean, IsDate, IsEnum, IsInt, IsJSON, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Max, Min, ValidateIf, ValidateNested } from "class-validator";
 import { ICoursesInterest } from "src/modules/users/interfaces/users.interface";
-import { ICoursesLevel, IDiet, IQuestionType, IQuizType } from "../interfaces/courses.interface";
+import { ICoursesLevel, IDiet, IQuestionType, IQuizType, IScenario } from "../interfaces/courses.interface";
 import { Type } from "class-transformer";
 
 export class CreateCourseDto {
@@ -20,6 +20,10 @@ export class CreateCourseDto {
     @IsNumber()
     @IsNotEmpty()
     price: number;
+
+    
+    @IsOptional()
+    scenario: IScenario;
 
     @IsEnum(ICoursesInterest)
     @IsNotEmpty()

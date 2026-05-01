@@ -1,6 +1,6 @@
 import { AllowNull, Column, DataType, Default, HasMany, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { ICoursesInterest } from "src/modules/users/interfaces/users.interface";
-import { ICoursesLevel } from "../interfaces/courses.interface";
+import { ICoursesLevel, IScenario } from "../interfaces/courses.interface";
 import { ChapterModel } from "./chapter.model";
 import { QuizModel } from "./quiz.model";
 import { CourseRatingModel } from "./course-rating.model";
@@ -38,6 +38,10 @@ export class CoursesModel extends Model<CoursesModel>{
     @AllowNull(true)
     @Column
     explanatoryVideoUrl: string;
+
+    @AllowNull(true)
+    @Column(DataType.JSON)
+    scenario: IScenario;
 
     @AllowNull(true)
     @Column
