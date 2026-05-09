@@ -268,7 +268,31 @@ export class CreateQuestionDto{
     @ValidateNested({ each: true })
     @ArrayMinSize(1)
     @Type(() => AnswerOptionDTO)
-    answerOptions: AnswerOptionDTO[]
+    answerOptions: AnswerOptionDTO[];
+
+  @IsEnum(ICoursesInterest)
+  @IsOptional()
+  courseType?: ICoursesInterest;
+
+  @IsString()
+  @IsOptional()
+  explanatoryNote?: string;
+
+  
+  @IsOptional()
+  scenario?: IScenario;
+
+  @IsNumber()
+  @IsOptional()
+  index?: number;
+
+  @IsString()
+  @IsOptional()
+  instructions?: string;
+
+  @IsString()
+  @IsOptional()
+  paragraph?: string;
 
 }
 
@@ -299,7 +323,30 @@ export class UpdateQuestionDto{
     @ValidateNested({ each: true })
     @ArrayMinSize(1)
     @Type(() => AnswerOptionDTO)
-    answerOptions: AnswerOptionDTO[]
+    answerOptions: AnswerOptionDTO[];
+
+  @IsEnum(ICoursesInterest)
+  @IsOptional()
+  courseType?: ICoursesInterest;
+
+  @IsString()
+  @IsOptional()
+  explanatoryNote?: string;
+  
+  @IsOptional()
+  scenario?: IScenario;
+
+  @IsNumber()
+  @IsOptional()
+  index?: number;
+
+  @IsString()
+  @IsOptional()
+  instructions?: string;
+
+  @IsString()
+  @IsOptional()
+  paragraph?: string;
 }
 
 
@@ -454,6 +501,9 @@ export class UpdateCourseDto{
     @IsNumber()
     @IsOptional()
     price: number;
+
+    @IsOptional()
+    scenario: IScenario;
 
     @IsEnum(ICoursesInterest)
     @IsOptional()
