@@ -3,6 +3,7 @@ import { QuizModel } from "./quiz.model";
 import { UsersModel } from "src/modules/users/models/users.model.";
 import { IDiet, IQuestion, IScenario, IUserAnswers } from "../interfaces/courses.interface";
 import { ICoursesInterest } from "src/modules/users/interfaces/users.interface";
+import { All } from "@nestjs/common";
 
 
 
@@ -55,6 +56,30 @@ export class QuestionModel extends Model<QuestionModel>{
     @AllowNull(true)
     @Column(DataType.ENUM(IDiet.may, IDiet.november, IDiet.march, IDiet.september))
     diet: IDiet;
+
+    @AllowNull(true)
+    @Column(DataType.ENUM(ICoursesInterest.ATS, ICoursesInterest.ICAN, ICoursesInterest.Olevel))
+    courseType: ICoursesInterest;
+
+    @AllowNull(true)
+    @Column(DataType.TEXT)
+    explanatoryNote: string;
+
+    @AllowNull(true)
+    @Column(DataType.JSONB)
+    scenarios: IScenario;
+
+    @AllowNull(true)
+    @Column(DataType.INTEGER)
+    index: number;
+
+    @AllowNull(true)
+    @Column(DataType.TEXT)
+    instructions: string;
+
+    @AllowNull(true)
+    @Column(DataType.TEXT)
+    paragraph: string;
 
     @AllowNull(false)
     @Column(DataType.JSONB)

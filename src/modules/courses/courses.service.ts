@@ -73,7 +73,13 @@ export class CoursesService {
       explanatoryVideoUrl: q.explanatoryVideoUrl || null,
       year: q.year || null,
       diet: q.diet || null,
-      answerOptions: q.answerOptions
+      answerOptions: q.answerOptions,
+      courseType: q.courseType || null,
+      explanatoryNote: q.explanatoryNote || null,
+      scenarios: q.scenarios || null,
+      instructions: q.instructions || null,
+      paragraph: q.paragraph || null,
+      index: q.index || null
     }));
 
 

@@ -231,9 +231,7 @@ export class GetQuestionDto{
     id: string;
 } 
 
-
-export class CreateQuestionDto{
-
+export class CreateQuestionDto {
     @IsString()
     @IsNotEmpty()
     questionContent: string;
@@ -270,34 +268,31 @@ export class CreateQuestionDto{
     @Type(() => AnswerOptionDTO)
     answerOptions: AnswerOptionDTO[];
 
-  @IsEnum(ICoursesInterest)
-  @IsOptional()
-  courseType?: ICoursesInterest;
+    @IsEnum(ICoursesInterest)
+    @IsOptional()
+    courseType?: ICoursesInterest;
 
-  @IsString()
-  @IsOptional()
-  explanatoryNote?: string;
+    @IsString()
+    @IsOptional()
+    explanatoryNote?: string;
 
-  
-  @IsOptional()
-  scenario?: IScenario;
+    @IsOptional()
+    scenarios?: IScenario;
 
-  @IsNumber()
-  @IsOptional()
-  index?: number;
+    @IsString()
+    @IsOptional()
+    instructions?: string;
 
-  @IsString()
-  @IsOptional()
-  instructions?: string;
+    @IsString()
+    @IsOptional()
+    paragraph?: string;
 
-  @IsString()
-  @IsOptional()
-  paragraph?: string;
-
+    @IsNumber()
+    @IsOptional()
+    index: number;
 }
 
-
-export class UpdateQuestionDto{
+export class UpdateQuestionDto {
     @IsString()
     @IsOptional()
     questionContent: string;
@@ -325,30 +320,29 @@ export class UpdateQuestionDto{
     @Type(() => AnswerOptionDTO)
     answerOptions: AnswerOptionDTO[];
 
-  @IsEnum(ICoursesInterest)
-  @IsOptional()
-  courseType?: ICoursesInterest;
+    @IsEnum(ICoursesInterest)
+    @IsOptional()
+    courseType?: ICoursesInterest;
 
-  @IsString()
-  @IsOptional()
-  explanatoryNote?: string;
-  
-  @IsOptional()
-  scenario?: IScenario;
+    @IsString()
+    @IsOptional()
+    explanatoryNote?: string;
 
-  @IsNumber()
-  @IsOptional()
-  index?: number;
+    @IsOptional()
+    scenarios?: IScenario;
 
-  @IsString()
-  @IsOptional()
-  instructions?: string;
+    @IsString()
+    @IsOptional()
+    instructions?: string;
 
-  @IsString()
-  @IsOptional()
-  paragraph?: string;
+    @IsString()
+    @IsOptional()
+    paragraph?: string;
+
+    @IsNumber()
+    @IsOptional()
+    index: number;
 }
-
 
 
 class AnswerOptionDTO{
