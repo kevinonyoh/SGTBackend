@@ -129,28 +129,4 @@ export class QuizAttemptModel extends Model<QuizAttemptModel> {
     @AllowNull(false)
     @Column(DataType.JSONB)
     userAnswers: IUserAnswers[];
-
-    @AllowNull(true)
-    @Column(DataType.ENUM(ICoursesInterest.ATS, ICoursesInterest.Olevel, ICoursesInterest.ICAN))
-    courseType: ICoursesInterest;
-
-    @AllowNull(true)
-    @Column(DataType.TEXT)
-    explanatoryNote: string;
-
-    @AllowNull(true)
-    @Column(DataType.JSONB)
-    scenario: IScenario;
-
-    @AllowNull(true)
-    @Column(DataType.INTEGER)
-    index: number;
-
-    @AllowNull(true)
-    @Column(DataType.TEXT)
-    instructions: string;
-
-    @AllowNull(true)
-    @Column(DataType.TEXT)
-    paragraph: string;    
 }
