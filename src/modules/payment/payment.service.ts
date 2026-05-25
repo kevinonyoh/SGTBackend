@@ -47,6 +47,15 @@ export class PaymentService {
 
      const courseContent = course.toJSON();
 
+     const activeEnrollment = await this.paymentRepository.findOne({
+      userId: userContent.id,
+      courseId: courseContent.id,
+      status: IStatus.successful,
+      expirationDate: { [Op.gt]: new Date() },
+    })
+
+    if (activeEnrollment) throw new BadRequestException(`You already have an active enrollment for this course. Your access expires on ${activeEnrollment.expirationDate.toISOString().split('T')[0]}.`);
+    
     const reference = helpers.referenceGenerator();
 
     const val = {
