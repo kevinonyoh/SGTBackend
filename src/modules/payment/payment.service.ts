@@ -310,6 +310,8 @@ export class PaymentService {
 
     const hasAccess = await this.paymentRepository.findOne({ userId: user.id, courseId, status: IStatus.successful,  expirationDate: { [Op.gt]: new Date() } }, <unknown>includeOption);
 
+    if(!hasAccess) throw new BadRequestException("Your course has expire");
+
     const payment = hasAccess.toJSON();
 
     for (const quiz of payment["course"].quizzes) {
