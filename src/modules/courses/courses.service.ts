@@ -571,7 +571,7 @@ async reviewQuiz(user: IUser, quizId: string) {
   }
 
 
-  async handleGeneralQuestionType(quiz: any, data: GetCourseDto, quizJson: any) {
+  async handleGeneralQuestionType(quiz: any, data: GetCourseDto, quizJson: any, throwIfEmpty: boolean = true) {
     const { page, limit, timeLimit } = data;
     
     const defaultLimit = quizJson.default;
@@ -585,14 +585,20 @@ async reviewQuiz(user: IUser, quizId: string) {
       ...quickQuizzes.map((q) => q.id),
     ];
   
-    if (quizIds.length === 0) {
-      throw new BadRequestException("No past or quick quizzes available for this course");
+    if (quizIds.length === 0 ) {
+
+      if(throwIfEmpty) throw new BadRequestException("No past or quick quizzes available for this course");
+
+      return null
     }
   
     const questions = await this.questionRepository.findAll({ quizId: quizIds });
   
     if (questions.length === 0) {
-      throw new BadRequestException("No questions available for general question type");
+
+      if(throwIfEmpty) throw new BadRequestException("No questions available for general question type");
+
+      return null;
     }
   
 

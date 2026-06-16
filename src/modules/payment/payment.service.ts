@@ -323,7 +323,9 @@ export class PaymentService {
           timeLimit: null
         };
 
-        const generalQuestions = await this.coursesService.handleGeneralQuestionType(quiz, val, quiz);
+        const generalQuestions = await this.coursesService.handleGeneralQuestionType(quiz, val, quiz, false);
+
+       
 
         quiz.questions = generalQuestions.question.rows;
 
