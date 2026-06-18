@@ -327,7 +327,7 @@ export class PaymentService {
 
        
 
-        quiz.questions = generalQuestions.question.rows;
+        quiz.questions = generalQuestions ? generalQuestions.question.rows : [];
 
       }
     }
