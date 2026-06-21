@@ -6,7 +6,8 @@ import { UsersModel } from 'src/modules/users/models/users.model.';
 @Table({ 
   tableName: 'course_ratings',
   modelName: "CourseRatingModel",
-  freezeTableName: true
+  freezeTableName: true,
+  underscored: true
  })
 export class CourseRatingModel extends Model<CourseRatingModel> {
  
