@@ -287,9 +287,6 @@ export class CreateQuestionDto {
     @IsOptional()
     paragraph?: string;
 
-    @IsNumber()
-    @IsOptional()
-    index: number;
 }
 
 export class UpdateQuestionDto {

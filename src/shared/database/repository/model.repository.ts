@@ -11,8 +11,8 @@ export class ModelRepository<M> implements IModel<M> {
         return this.model.create(data, { transaction });
     }
     
-    async bulkCreate<T = unknown>(data: T[], transaction: Transaction | null): Promise<M[]> {
-        return this.model.bulkCreate(data, { transaction });
+    async bulkCreate<T = unknown>(data: T[],  transaction?: Transaction, individualHooks?: boolean): Promise<M[]> {
+        return this.model.bulkCreate(data, {transaction, individualHooks});
     }
 
     async findAll<T = unknown>(filter: WhereOptions<M> = {}, includes?: FindOptions<T>): Promise<M[]> {
@@ -48,8 +48,8 @@ export class ModelRepository<M> implements IModel<M> {
         return rows[0];
     }
 
-    async delete(filter: WhereOptions<M>, transaction: Transaction | null): Promise<M> {
-        return this.model.destroy({where: { ...filter }, transaction });
+    async delete(filter: WhereOptions<M>, transaction: Transaction | null, individualHooks?: boolean): Promise<M> {
+        return this.model.destroy({where: { ...filter }, transaction, individualHooks });
     }
 
     private generatePaginationParams(pagination: IPagination) {

@@ -1,9 +1,10 @@
-import { AllowNull, BelongsTo, Column, DataType, Default, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { AfterDestroy, AllowNull, BeforeCreate, BeforeDefine, BelongsTo, Column, DataType, Default, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { QuizModel } from "./quiz.model";
 import { UsersModel } from "src/modules/users/models/users.model.";
 import { IDiet, IQuestion, IScenario, IUserAnswers } from "../interfaces/courses.interface";
 import { ICoursesInterest } from "src/modules/users/interfaces/users.interface";
 import { All } from "@nestjs/common";
+import { Op } from "sequelize";
 
 
 
@@ -12,7 +13,13 @@ import { All } from "@nestjs/common";
     tableName: "questions",
     modelName: "QuestionModel",
     underscored: true,
-    freezeTableName: true
+    freezeTableName: true,
+    indexes: [
+        {
+            unique: true,
+            fields: ['quizId', 'index']
+        }
+    ]
 })
 export class QuestionModel extends Model<QuestionModel>{
 
@@ -70,7 +77,10 @@ export class QuestionModel extends Model<QuestionModel>{
     scenarios: IScenario;
 
     @AllowNull(true)
-    @Column(DataType.INTEGER)
+    @Column({
+        type: DataType.INTEGER,
+        unique: 'unique_quiz_index'
+    })
     index: number;
 
     @AllowNull(true)
@@ -85,6 +95,25 @@ export class QuestionModel extends Model<QuestionModel>{
     @Column(DataType.JSONB)
     answerOptions: IQuestion[];
 
+
+    @BeforeCreate
+    static async setIndex(instance: QuestionModel, options: any) {
+      const maxIndex = await QuestionModel.max('index', { where: { quizId: instance.quizId }, transaction: options.transaction }) as number | null;  
+    
+      instance.index = (maxIndex ?? 0) + 1; 
+    }
+
+    @AfterDestroy
+    static async renumberAfterDelete(instance: QuestionModel, options: any) {
+    await QuestionModel.decrement('index', {
+        by: 1,
+        where: {
+        quizId: instance.quizId,
+        index: { [Op.gt]: instance.index }
+        },
+        transaction: options.transaction
+    });
+}
 }
 
 

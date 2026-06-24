@@ -4,7 +4,7 @@ import { Literal } from "sequelize/types/utils";
 export interface IModel<M> {
     create<T = unknown>(data: T, transaction: Transaction | null);
 
-    bulkCreate<T = unknown>(data: T[], transaction: Transaction | null): Promise<M[]>;
+    bulkCreate<T = unknown>(data: T[], transaction?: Transaction | null, individualHooks?: boolean): Promise<M[]>;
 
     findAll<T = unknown>(filter?: WhereOptions<M>, includes?: FindOptions<T>): Promise<M[]>;
 
@@ -16,7 +16,7 @@ export interface IModel<M> {
 
     update<T = unknown>(filter: WhereOptions<M>, data: Partial<T>, transaction?: Transaction | null): Promise<M>;
 
-    delete(filter: WhereOptions<M>, transaction?: Transaction | null): Promise<M>;
+    delete(filter: WhereOptions<M>, transaction?: Transaction | null, individualHooks?: boolean): Promise<M>;
 }
 
 export interface IPagination {

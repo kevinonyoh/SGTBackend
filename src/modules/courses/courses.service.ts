@@ -78,12 +78,12 @@ export class CoursesService {
       explanatoryNote: q.explanatoryNote || null,
       scenarios: q.scenarios || null,
       instructions: q.instructions || null,
-      paragraph: q.paragraph || null,
-      index: q.index || null
+      paragraph: q.paragraph || null
     }));
 
+    const individualHooks = true;
 
-  return await this.questionRepository.bulkCreate(questions, transaction);
+  return await this.questionRepository.bulkCreate(questions, transaction, individualHooks);
 
   }
 
@@ -495,7 +495,9 @@ async reviewQuiz(user: IUser, quizId: string) {
   }
 
   async deleteQuestion(quizId:string, id: string, transaction: Transaction){
-      await this.questionRepository.delete({id, quizId}, transaction);
+      const individualHooks = true;
+
+      await this.questionRepository.delete({id, quizId}, transaction, individualHooks);
   }
 
   async deleteQuiz(courseId:string, id:string, transaction: Transaction){

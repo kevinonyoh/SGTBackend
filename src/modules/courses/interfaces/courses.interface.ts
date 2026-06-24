@@ -19,6 +19,7 @@ export interface IQuestion{
     content: string;
     isCorrect: boolean;
     explanation?: string;
+    image?: string;
 }
 
 
