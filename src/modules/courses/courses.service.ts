@@ -488,11 +488,41 @@ async reviewQuiz(user: IUser, quizId: string) {
 
   }
 
-  async updateQuestion(quizId: string, id: string, data: UpdateQuestionDto, transaction: Transaction){
-    
-    return await this.questionRepository.update({quizId, id}, {...data}, transaction);
 
-  }
+async updateQuestion(quizId: string, id: string, data: UpdateQuestionDto, transaction: Transaction) {
+   
+    const existing = await this.questionRepository.findOne({ quizId, id });
+   
+    if (!existing) {
+        throw new BadRequestException('Question not found');
+    }
+
+    const updatePayload: any = { ...data };
+
+    if (data.answerOptions) {
+        const existingOptions = existing.answerOptions || [];
+
+        const incomingOptions = data.answerOptions;          
+
+        const mergedOptions = incomingOptions.map((incoming, index) => {
+
+          const existingOption = existingOptions[index];
+
+          return {
+
+                ...(existingOption ?? { content: '', isCorrect: false }),
+
+                ...incoming,
+            
+                image: incoming.image !== undefined ? incoming.image : existingOption?.image,
+            };
+        });
+
+        updatePayload.answerOptions = mergedOptions;
+    }
+
+    return await this.questionRepository.update({ quizId, id },  updatePayload, transaction);
+}
 
   async deleteQuestion(quizId:string, id: string, transaction: Transaction){
       const individualHooks = true;

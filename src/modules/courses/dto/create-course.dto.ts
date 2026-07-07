@@ -354,6 +354,10 @@ class AnswerOptionDTO{
     @IsOptional()
     explanation?: string;
 
+    @IsString()
+    @IsOptional()
+    image: string;
+
 }
 
 
