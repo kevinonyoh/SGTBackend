@@ -602,55 +602,57 @@ async updateQuestion(quizId: string, id: string, data: UpdateQuestionDto, transa
     
   }
 
-
   async handleGeneralQuestionType(quiz: any, data: GetCourseDto, quizJson: any, throwIfEmpty: boolean = true) {
     const { page, limit, timeLimit } = data;
-    
     const defaultLimit = quizJson.default;
   
-    const pastQuizzes = await this.quizRepository.findAll({ courseId: quiz.courseId, type: quizJson["type"], questionType: IQuestionType.past_question  });
+   
+    const pastQuizzes = await this.quizRepository.findAll({
+      courseId: quiz.courseId,
+      type: quizJson.type,
+      questionType: IQuestionType.past_question
+    });
   
-    const quickQuizzes = await this.quizRepository.findAll({  courseId: quiz.courseId, type: quizJson["type"],  questionType: IQuestionType.quick_question });
+    const quickQuizzes = await this.quizRepository.findAll({
+      courseId: quiz.courseId,
+      type: quizJson.type,
+      questionType: IQuestionType.quick_question
+    });
   
     const quizIds = [
-      ...pastQuizzes.map((q) => q.id),
-      ...quickQuizzes.map((q) => q.id),
+      ...pastQuizzes.map(q => q.id),
+      ...quickQuizzes.map(q => q.id)
     ];
   
-    if (quizIds.length === 0 ) {
-
-      if(throwIfEmpty) throw new BadRequestException("No past or quick quizzes available for this course");
-
-      return null
-    }
-  
-    const questions = await this.questionRepository.findAll({ quizId: quizIds });
-  
-    if (questions.length === 0) {
-
-      if(throwIfEmpty) throw new BadRequestException("No questions available for general question type");
-
+    if (quizIds.length === 0) {
+      if (throwIfEmpty) throw new BadRequestException("No past or quick quizzes available for this course");
       return null;
     }
   
-
-    const uniqueQuestions = Array.from(
-      new Map(questions.map((q) => [q.id, q])).values()
-    );
+    
+    const questions = await this.questionRepository.findAll({
+      quizId: quizIds
+    });
   
-    const shuffled = uniqueQuestions.sort(() => Math.random() - 0.5);
-  
-    if (shuffled.length > uniqueQuestions.length) {
-      shuffled.length = uniqueQuestions.length;
+    if (questions.length === 0) {
+      if (throwIfEmpty) throw new BadRequestException("No questions available for general question type");
+      return null;
     }
   
-    const totalAvailable = shuffled.length;
+    
+    const uniqueQuestions = Array.from(
+      new Map(questions.map(q => [q.id, q])).values()
+    );
+  
+    
+    const orderedQuestions = uniqueQuestions.sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
+  
+    
+    const totalAvailable = orderedQuestions.length;
     const finalLimit = limit || defaultLimit;
+    const paginatedQuestions = orderedQuestions.slice(0, finalLimit);
   
-  
-    const paginatedQuestions = shuffled.slice(0, finalLimit);
-  
-    if (timeLimit) quizJson["timeLimit"] = timeLimit;
+    if (timeLimit) quizJson.timeLimit = timeLimit;
   
     return {
       ...quizJson,
@@ -660,7 +662,6 @@ async updateQuestion(quizId: string, id: string, data: UpdateQuestionDto, transa
       },
     };
   }
-
 
  async handleAllGeneralQuestionType(quiz: any, quizJson: any) {
 
