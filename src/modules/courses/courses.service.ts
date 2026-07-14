@@ -78,7 +78,8 @@ export class CoursesService {
       explanatoryNote: q.explanatoryNote || null,
       scenarios: q.scenarios || null,
       instructions: q.instructions || null,
-      paragraph: q.paragraph || null
+      paragraph: q.paragraph || null,
+      dependsOnQuestionId: q.dependsOnQuestionId || null
     }));
 
     const individualHooks = true;
@@ -606,7 +607,6 @@ async updateQuestion(quizId: string, id: string, data: UpdateQuestionDto, transa
     const { page, limit, timeLimit } = data;
     const defaultLimit = quizJson.default;
   
-   
     const pastQuizzes = await this.quizRepository.findAll({
       courseId: quiz.courseId,
       type: quizJson.type,
@@ -629,7 +629,6 @@ async updateQuestion(quizId: string, id: string, data: UpdateQuestionDto, transa
       return null;
     }
   
-    
     const questions = await this.questionRepository.findAll({
       quizId: quizIds
     });
@@ -639,26 +638,65 @@ async updateQuestion(quizId: string, id: string, data: UpdateQuestionDto, transa
       return null;
     }
   
-    
+  
     const uniqueQuestions = Array.from(
       new Map(questions.map(q => [q.id, q])).values()
     );
-  
-    
     const orderedQuestions = uniqueQuestions.sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
   
-    
-    const totalAvailable = orderedQuestions.length;
+    const questionMap = new Map<string, any>();
+    orderedQuestions.forEach(q => questionMap.set(q.id, q));
+  
+    const validQuestions = orderedQuestions.filter(q => {
+      if (!q.dependsOnQuestionId) return true;
+      return questionMap.has(q.dependsOnQuestionId);
+    });
+  
+    if (validQuestions.length === 0) {
+      if (throwIfEmpty) throw new BadRequestException("No complete dependency chains found, This quiz is temporarily unavailable");
+      return null;
+    }
+  
+    const findRoot = (q: any): string => {
+      if (!q.dependsOnQuestionId) return q.id;
+      const parent = questionMap.get(q.dependsOnQuestionId);
+      if (!parent) return q.id; 
+      return findRoot(parent);
+    };
+  
+    const rootMap = new Map<string, string[]>();
+    validQuestions.forEach(q => {
+      const rootId = findRoot(q);
+      if (!rootMap.has(rootId)) rootMap.set(rootId, []);
+      rootMap.get(rootId).push(q.id);
+    });
+  
+    const groups = Array.from(rootMap.entries()).map(([rootId, ids]) => {
+      const groupQuestions = ids.map(id => questionMap.get(id));
+      groupQuestions.sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
+      return {
+        rootId,
+        questions: groupQuestions,
+        minIndex: groupQuestions[0]?.index ?? 0,
+      };
+    });
+  
+    groups.sort((a, b) => a.minIndex - b.minIndex);
+  
     const finalLimit = limit || defaultLimit;
-    const paginatedQuestions = orderedQuestions.slice(0, finalLimit);
+    let selectedQuestions: any[] = [];
+    for (const group of groups) {
+      if (selectedQuestions.length >= finalLimit) break;
+      selectedQuestions = selectedQuestions.concat(group.questions);
+    }
   
     if (timeLimit) quizJson.timeLimit = timeLimit;
   
     return {
       ...quizJson,
       question: {
-        total: totalAvailable,
-        rows: paginatedQuestions,
+        total: validQuestions.length,   
+        rows: selectedQuestions,        
       },
     };
   }

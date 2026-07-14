@@ -95,6 +95,14 @@ export class QuestionModel extends Model<QuestionModel>{
     @Column(DataType.JSONB)
     answerOptions: IQuestion[];
 
+    @ForeignKey(() => QuestionModel)
+    @AllowNull(true)
+    @Column(DataType.UUID)
+    dependsOnQuestionId: string;
+
+    @BelongsTo(() => QuestionModel, 'dependsOnQuestionId')
+    dependsOnQuestion: QuestionModel;
+
 
     @BeforeCreate
     static async setIndex(instance: QuestionModel, options: any) {

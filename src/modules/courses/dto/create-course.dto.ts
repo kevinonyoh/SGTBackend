@@ -287,6 +287,9 @@ export class CreateQuestionDto {
     @IsOptional()
     paragraph?: string;
 
+    @IsString()
+    @IsOptional()
+    dependsOnQuestionId: string;
 }
 
 export class UpdateQuestionDto {
@@ -339,6 +342,10 @@ export class UpdateQuestionDto {
     @IsNumber()
     @IsOptional()
     index: number;
+
+    @IsString()
+    @IsOptional()
+    dependsOnQuestionId: string;
 }
 
 
